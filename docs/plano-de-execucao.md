@@ -3,14 +3,16 @@
 Plano pensado para quem está no **2º período de ADS**: poucas coisas por vez, cada etapa entrega algo que dá para ver rodando, e cada etapa ensina um conceito novo. Atualizado em 15/11/2026.
 
 ## 1. Onde estamos
-**Já existe no código (compila e gera o APK; ainda não testado no celular):**
+**Já existe no código (compila, gera o APK e foi testado no emulador; falta testar em celular de verdade):**
 - Moeda desenhada por código, com giro, subida e sombra (`Coin.kt`).
 - Tela do app com botão "Girar moeda" (`MainActivity.kt`).
-- Widget 2x2 que gira ao toque (`CoinWidgetProvider.kt`).
-- Último resultado guardado no aparelho e compartilhado entre o app e o widget.
+- Widget (padrão 3x3) que gira ao toque (`CoinWidgetProvider.kt`).
+- Estado do jogo guardado no aparelho e compartilhado entre o app e o widget (`CoinStore.kt`).
+- Girar só 1 vez (padrão), modo livre, melhor de 5/7, vencedor grande, "Jogar novamente?" e "Zerar tudo" (D06, D08, D09).
+- No app, deslizar para cima na moeda também gira (D07).
 
 **Ainda não existe:**
-- Teste no celular ou emulador (o APK já compila).
+- Teste em celular de verdade (no emulador já funciona).
 - Repositório no GitHub.
 - Ícone final, visual final do widget, vibração e som.
 
@@ -42,6 +44,24 @@ Cortar cedo é o que garante que o MVP fique pronto.
 - Ajustar `FRAME_COUNT` e `FRAME_DELAY_MS` se a animação ficar travada.
 - **Pronto quando:** tocar no widget gira a moeda e mostra o resultado, sem abrir o app.
 - **Você aprende:** `AppWidgetProvider`, `RemoteViews`, `PendingIntent` (um "aviso" que o Android entrega depois) e `Thread`.
+
+### Etapa 2.5 — Decisões rápidas (textos e pergunta)
+- Textos de cara e coroa, pergunta opcional e o lápis do widget com a janelinha.
+- **Pronto quando:** pelo widget, o usuário digita "Pedir delivery?" com cara = "Sim" e coroa = "Não", toca em "Girar" e vê o resultado com esses textos.
+- **Você aprende:** `EditText` (campo de texto), mais de uma tela (`Activity`), tema de diálogo, `SharedPreferences` com texto.
+- **Situação:** código pronto e compilando; falta o usuário testar.
+
+### Etapa 2.6 — Modos de jogo (1 vez, livre, melhor de 5 e 7)
+- Opções 1 vez / Livre / melhor de 5 / melhor de 7 (marcar), linhas fixas e centralizadas abaixo da moeda (pergunta, placar em 3 colunas, sequência ●/○).
+- **Pronto quando:** no modo livre o placar conta sem fim; em "melhor de 5", cada toque gira uma vez, o texto não pula e ao chegar a 3 vitórias o vencedor aparece grande sobre a moeda.
+- **Você aprende:** `RadioGroup` (opções de marcar), `SharedPreferences` com mais de um dado, estado que dura mais de um toque.
+- **Situação:** código pronto, compilando e conferido visualmente no emulador (D06); falta o usuário testar.
+
+### Etapa 2.7 — Vencedor, jogar novamente e zerar
+- Camada do vencedor sobre a moeda, botão "Jogar novamente?", "Zerar tudo" com confirmação e limites de texto (12 e 30).
+- **Pronto quando:** ao ganhar a série a moeda não gira mais até tocar em "Jogar novamente?"; "Zerar tudo" volta ao modo "1 vez" sem pergunta nem textos.
+- **Você aprende:** sobrepor telas (`FrameLayout`), `AlertDialog` de confirmação, `autoSize` do texto.
+- **Situação:** código pronto e compilando; ainda não testados por toque: "Jogar novamente?" e "Zerar tudo". Falta testar no celular de verdade.
 
 ### Etapa 3 — Acabamento
 - Ícone, cores, texto do widget e (opcional) vibração.

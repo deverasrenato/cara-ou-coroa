@@ -4,4 +4,15 @@
         <item name="colorPrimary">@color/accent</item>
         <item name="colorAccent">@color/accent</item>
     </style>
+
+    <!-- Tema da janelinha que abre por cima da tela inicial -->
+    <style name="Theme.CaraOuCoroa.Dialog" parent="Theme.AppCompat.DayNight.Dialog">
+        <item name="colorPrimary">@color/accent</item>
+        <item name="colorAccent">@color/accent</item>
+        <!-- Sem a barra de título repetida (a janelinha já tem o próprio título) -->
+        <item name="android:windowNoTitle">true</item>
+        <!-- Janelinha larga: ocupa 90% da largura da tela -->
+        <item name="android:windowMinWidthMajor">90%</item>
+        <item name="android:windowMinWidthMinor">90%</item>
+    </style>
 </resources>

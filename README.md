@@ -6,13 +6,30 @@ App de cara ou coroa para Android. O diferencial é o widget: o usuário toca ne
 
 Projeto acadêmico de Análise e Desenvolvimento de Sistemas (ADS), desenvolvido em Kotlin com o Android Studio. Somente Android.
 
-> **Status:** em desenvolvimento (MVP). O app compila e gera o APK de teste, mas ainda não foi testado no celular. Veja o [Roadmap](#roadmap).
+> **Status:** em desenvolvimento (MVP). O app compila, gera o APK de teste e funciona no emulador (app e widget com animação), mas ainda não foi testado em celular de verdade. Veja o [Roadmap](#roadmap).
 
 ## Como o app funciona
 1. O usuário abre o app e toca na moeda (ou no botão "Girar moeda"): a moeda gira e mostra CARA ou COROA.
 2. O usuário adiciona o widget à tela inicial (segurar a tela, Widgets, Cara ou Coroa).
-3. Tocando no widget, a moeda gira com animação e o resultado aparece ali mesmo.
-4. O app e o widget guardam o último resultado e mostram sempre o mesmo.
+3. Tocando na moeda do widget, ela gira com animação e o resultado aparece ali mesmo.
+4. Para decidir algo específico, o usuário toca no lápis do widget e digita (tudo opcional) a pergunta e o que significa cara e coroa. Exemplo: "Pedir delivery?", cara = "Sim", coroa = "Não". A moeda para em CARA e, embaixo dela, aparece:
+
+```
+Pedir delivery?
+Sim
+```
+
+5. O usuário escolhe o modo marcando uma opção: **Girar só 1 vez** (padrão, sem placar), **Livre (sem fim)** (conta cara e coroa até o app sair da tela), **Melhor de 5** ou **Melhor de 7**. Cada toque na moeda é um giro (no app, deslizar o dedo para cima na moeda também gira). Nos modos com placar, logo abaixo da moeda ficam linhas fixas e centralizadas: a pergunta, o placar e o que saiu em cada giro (● = lado da cara, ○ = lado da coroa):
+
+```
+Pedir delivery?
+● Sim   2 x 1   Não ○
+● ○ ●
+```
+
+6. Quando um lado ganha a série (3 vitórias na melhor de 5, 4 na melhor de 7), o vencedor aparece grande sobre a moeda, com o botão **"Jogar novamente?"**. Os giros que sobrariam não são jogados.
+7. **"Zerar tudo"** (no app e na janelinha do lápis, com confirmação) apaga placar, pergunta e textos e volta ao modo "girar só 1 vez".
+8. Limites de texto: 12 letras para cara e coroa, 30 para a pergunta. O app e o widget guardam o mesmo estado e mostram sempre o mesmo.
 
 ## Tecnologias
 - [Kotlin](https://kotlinlang.org) e o [Android Studio](https://developer.android.com/studio)
@@ -50,7 +67,9 @@ cara-ou-coroa/
 │   └── src/main/
 │       ├── java/com/deverasrenato/caraoucoroa/   # código Kotlin
 │       │   ├── Coin.kt                # desenha a moeda e a animação
+│       │   ├── CoinStore.kt           # guarda o estado do jogo (placar, textos, modo)
 │       │   ├── CoinWidgetProvider.kt  # o widget
+│       │   ├── QuickFlipActivity.kt   # a janelinha do lápis do widget
 │       │   └── MainActivity.kt        # a tela do app
 │       ├── res/                       # layouts, textos, cores e ícone
 │       └── AndroidManifest.xml
@@ -68,12 +87,16 @@ cara-ou-coroa/
 **Já existe no código (compila; ainda não testado no celular):**
 - [x] Moeda desenhada por código, com giro, subida e sombra
 - [x] Tela do app com botão "Girar moeda"
-- [x] Widget 2x2 que gira ao toque
+- [x] Widget (padrão 3x3) que gira ao toque
 - [x] Último resultado compartilhado entre o app e o widget
+- [x] Textos de cara e coroa e pergunta opcional (no app e na janelinha do widget)
+- [x] Girar só 1 vez, modo livre e séries "melhor de 5/7" com placar e sequência
+- [x] Vencedor grande sobre a moeda, "Jogar novamente?" e "Zerar tudo"
 
 **Próximos passos:**
 - [x] Compilar (APK de teste gerado por linha de comando)
-- [ ] Testar no celular
+- [x] Testar no emulador (app e widget funcionando)
+- [ ] Testar em celular de verdade
 - [ ] Ajustar a fluidez da animação do widget
 - [ ] Ícone final e visual do widget
 - [ ] Vibração e som ao girar (opcional)

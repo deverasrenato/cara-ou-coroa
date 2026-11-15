@@ -30,6 +30,7 @@ App Android nativo em **Kotlin** (views em XML), aberto no **Android Studio**. A
 - Chamar quem usa o app de "usuário".
 - **Não faça `git commit` nem `git push`.** O usuário faz os commits e os envios no próprio terminal, para aprender Git. Ao terminar uma mudança, diga quais arquivos mudaram e explique, passo a passo, os comandos para ele rodar, sugerindo uma mensagem de commit.
 - **Ambiente neste computador (sem Android Studio):** JDK 17 em `%USERPROFILE%\tools\jdk-17`, Gradle em `%USERPROFILE%\tools\gradle-8.7` e Android SDK em `%LOCALAPPDATA%\Android\Sdk`. Para compilar: defina `JAVA_HOME` e `ANDROID_HOME` e rode `.\gradlew.bat assembleDebug`. O arquivo `local.properties` (com o caminho do SDK) não vai para o Git.
+- **Emulador:** dispositivo `pixel_api34` (Android 34). Para abrir: `& "$env:LOCALAPPDATA\Android\Sdk\emulator\emulator.exe" -avd pixel_api34`. Precisa da Plataforma do Hipervisor do Windows ativa (já ativada). Instalar o APK: `adb install -r app\build\outputs\apk\debug\app-debug.apk`. Não use toques automáticos (`adb input`) enquanto o usuário estiver usando o emulador.
 - Compilar não prova que funciona: o widget só se testa no aparelho ou no emulador. Não diga que funciona sem o usuário testar.
 - Testar no celular (ou no emulador do Android Studio) a cada etapa. Widget só se testa no aparelho ou no emulador.
 - Os dados do usuário ficam só no aparelho.

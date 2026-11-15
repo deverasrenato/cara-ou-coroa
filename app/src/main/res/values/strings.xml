@@ -4,6 +4,21 @@
     <string name="coin">Moeda</string>
     <string name="flip_button">Girar moeda</string>
     <string name="tap_to_flip">Toque para girar</string>
+    <string name="quick_title">Girar a moeda</string>
+    <string name="series_title">Quantas vezes jogar?</string>
+    <string name="series_1">Girar só 1 vez</string>
+    <string name="series_free">Livre (sem fim)</string>
+    <string name="series_5">Melhor de 5</string>
+    <string name="series_7">Melhor de 7</string>
+    <string name="question_hint">Pergunta, opcional (até 30 letras)</string>
+    <string name="flip_now">Girar</string>
+    <string name="edit_button">Digitar pergunta</string>
+    <string name="labels_title">O que cada lado significa?</string>
+    <string name="heads_hint">Cara (até 12 letras, ex.: Sim)</string>
+    <string name="tails_hint">Coroa (até 12 letras, ex.: Não)</string>
+    <string name="winner_suffix">venceu!</string>
+    <string name="replay">Jogar novamente?</string>
+    <string name="reset_all">Zerar tudo</string>
     <string name="widget_description">Gire a moeda direto da tela inicial</string>
     <string name="widget_tip">Dica: segure a tela inicial, toque em Widgets e adicione o Cara ou Coroa para girar sem abrir o app.</string>
 </resources>

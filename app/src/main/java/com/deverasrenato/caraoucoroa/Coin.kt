@@ -1,6 +1,5 @@
 package com.deverasrenato.caraoucoroa
 
-import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Paint
@@ -11,39 +10,12 @@ import kotlin.math.cos
 import kotlin.math.max
 import kotlin.math.sin
 
-// Os dois lados da moeda
-const val HEADS = 0 // cara
-const val TAILS = 1 // coroa
-
-// Texto que aparece escrito na moeda e nas mensagens
-fun sideName(side: Int): String {
-    return if (side == HEADS) "CARA" else "COROA"
-}
-
-// Guarda o último lado que saiu (o app e o widget leem daqui)
-object CoinStore {
-    private fun prefs(context: Context) =
-        context.getSharedPreferences("coin", Context.MODE_PRIVATE)
-
-    // -1 significa que o usuário ainda nunca girou a moeda
-    fun hasResult(context: Context): Boolean {
-        return prefs(context).getInt("side", -1) >= 0
-    }
-
-    fun lastSide(context: Context): Int {
-        return max(0, prefs(context).getInt("side", -1))
-    }
-
-    fun save(context: Context, side: Int) {
-        prefs(context).edit().putInt("side", side).apply()
-    }
-}
-
 // Desenha a moeda em uma imagem (Bitmap). O app e o widget usam o mesmo desenho.
 object Coin {
     const val IMAGE_SIZE = 240       // largura e altura da imagem, em pixels
     const val FRAME_COUNT = 18       // quantas imagens tem a animação
     const val FRAME_DELAY_MS = 70L   // tempo entre as imagens (18 x 70 = cerca de 1,3 s)
+    const val WINNER_DELAY_MS = 1200L // quanto tempo a moeda fica visível antes de aparecer o vencedor
 
     private const val RADIUS = 70f
 
