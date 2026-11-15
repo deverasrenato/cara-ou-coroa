@@ -1,0 +1,736 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Moedinha — demonstração</title>
+<meta name="description" content="Simulação clicável do app Moedinha (cara ou coroa com widget para Android).">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* ---------- Página ---------- */
+* { box-sizing: border-box; }
+body { margin: 0; background: #070A20; color: #F5F6FF; font-family: 'Nunito', system-ui, sans-serif; min-height: 100vh; }
+#top { max-width: 1000px; margin: 0 auto; padding: 18px 16px 8px; display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: center; justify-content: space-between; }
+#top h1 { margin: 0; font-family: 'Baloo 2', sans-serif; font-weight: 800; font-size: 28px; color: #FFC83D; line-height: 1.1; }
+#top p { margin: 2px 0 0; font-size: 14px; color: #A9B0D6; max-width: 520px; line-height: 1.4; }
+#note { max-width: 1000px; margin: 0 auto; padding: 0 16px 8px; font-size: 13px; color: #8089B8; }
+#note a { color: #FFC83D; }
+#stage { display: flex; flex-wrap: wrap; justify-content: center; gap: 24px 40px; padding: 8px 8px 32px; }
+.col { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.cap { font: 800 15px 'Nunito', sans-serif; color: #A9B0D6; letter-spacing: 0.5px; text-transform: uppercase; }
+
+/* ---------- Celular (390 x 844) ---------- */
+.scaler { transform-origin: top left; }
+.device { position: relative; width: 390px; height: 844px; border-radius: 40px; overflow: hidden; border: 8px solid #1A1F4A; box-shadow: 0 30px 70px rgba(0,0,0,0.6); background: #0B1030; transform-origin: top left; }
+#off { flex-direction: column; align-items: center; justify-content: center; background: #05071A; color: #6C74A6; font-size: 16px; text-align: center; padding: 40px; gap: 12px; }
+
+/* ---------- Ícones da tela inicial ---------- */
+.apps { margin-top: auto; width: 100%; display: flex; justify-content: space-between; padding: 0 6px; }
+.app { width: 74px; display: flex; flex-direction: column; align-items: center; gap: 6px; border: 0; background: none; color: #fff; font: 700 12px 'Nunito', sans-serif; cursor: default; text-shadow: 0 1px 4px rgba(0,0,0,0.55); }
+.app .ic { width: 58px; height: 58px; border-radius: 18px; display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 14px rgba(0,0,0,0.35); }
+.app.me { cursor: pointer; }
+@keyframes chama { 0%, 100% { box-shadow: 0 6px 14px rgba(0,0,0,0.35), 0 0 0 0 rgba(255,200,61,0.7); } 50% { box-shadow: 0 6px 14px rgba(0,0,0,0.35), 0 0 0 10px rgba(255,200,61,0); } }
+.app.me .ic { animation: chama 1.6s ease-out infinite; }
+.app.me.used .ic { animation: none; }
+.screen { position: absolute; inset: 0; display: none; }
+.screen.show { display: flex; }
+.scroll { overflow-y: auto; scrollbar-width: none; }
+.scroll::-webkit-scrollbar { display: none; }
+
+/* ---------- Elementos comuns ---------- */
+.title { font-family: 'Baloo 2', sans-serif; font-weight: 800; }
+.gold { color: #FFC83D; }
+.card { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.11); border-radius: 24px; }
+.btn { border: 0; border-radius: 999px; background: linear-gradient(180deg, #FFD65A 0%, #FFB814 100%); box-shadow: 0 10px 22px rgba(255,184,20,0.32); font-family: 'Baloo 2', sans-serif; font-weight: 800; color: #3A2500; cursor: pointer; }
+.btn-danger { border-radius: 999px; border: 1.5px solid #FF8A80; background: rgba(255,138,128,0.10); color: #FF9E95; font: 800 16px 'Nunito', sans-serif; cursor: pointer; }
+.chip { border-radius: 999px; border: 2px solid #FFC83D; background: transparent; color: #FFC83D; font: 800 15px 'Nunito', sans-serif; cursor: pointer; }
+.mode { flex: 1 1 0; min-width: 0; height: 56px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.14); background: rgba(255,255,255,0.05); color: #E6E9FF; font: 700 14px 'Nunito', sans-serif; cursor: pointer; }
+.mode.on { border: 2px solid #FFC83D; background: rgba(255,200,61,0.16); color: #FFE08A; }
+label.f { display: block; font-size: 12px; font-weight: 800; color: #FFC83D; letter-spacing: 0.6px; text-transform: uppercase; margin-top: 8px; }
+input.f { width: 100%; height: 46px; margin-top: 5px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.16); background: rgba(8,12,36,0.6); color: #F5F6FF; font: 600 15px 'Nunito', sans-serif; padding: 0 14px; }
+.coin { display: block; transform-origin: 50% 50%; filter: drop-shadow(0 14px 16px rgba(0,0,0,0.5)); }
+.dot { display: inline-block; border-radius: 50%; border: 2.5px solid #FFC83D; }
+.dot.f { background: #FFC83D; }
+
+/* ---------- Meus layouts ---------- */
+.prow { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; align-items: center; min-height: 42px; }
+.prow::-webkit-scrollbar { display: none; }
+.pchip { flex: none; border-radius: 999px; border: 1px solid rgba(255,200,61,0.55); background: rgba(255,200,61,0.10); color: #FFC83D; font: 800 15px 'Nunito', sans-serif; padding: 9px 16px; cursor: pointer; white-space: nowrap; user-select: none; -webkit-user-select: none; }
+.phint { font-size: 13px; color: #A9B0D6; }
+.toast { position: absolute; left: 50%; bottom: 40px; transform: translateX(-50%); background: rgba(240,242,255,0.95); color: #0B1030; font: 700 14px 'Nunito', sans-serif; padding: 10px 18px; border-radius: 999px; z-index: 20; pointer-events: none; max-width: 330px; text-align: center; }
+.modal { position: absolute; inset: 0; background: rgba(4,6,22,0.7); display: none; align-items: center; justify-content: center; z-index: 15; }
+.modal.show { display: flex; }
+.modal .mbox { width: 300px; border-radius: 24px; background: #1B2150; padding: 20px; box-shadow: 0 30px 60px rgba(0,0,0,0.55); }
+.modal .mbtns { display: flex; justify-content: flex-end; gap: 6px; margin-top: 14px; }
+.modal .mbtns button { border: 0; background: none; color: #FFC83D; font: 800 15px 'Nunito', sans-serif; padding: 10px 14px; cursor: pointer; }
+
+/* ---------- Abertura ---------- */
+#splash { flex-direction: column; align-items: center; justify-content: center; background: linear-gradient(180deg, #0B1030 0%, #151A45 55%, #0B1030 100%); }
+#splash .glow { position: absolute; top: 190px; left: 50%; width: 440px; height: 440px; margin-left: -220px; background: radial-gradient(circle, rgba(255,200,61,0.30) 0%, rgba(255,200,61,0.08) 45%, rgba(255,200,61,0) 70%); }
+
+/* ---------- Boas-vindas ---------- */
+#welcome { flex-direction: column; align-items: center; padding: 30px 22px 22px; background: linear-gradient(180deg, #0B1030 0%, #151A45 100%); z-index: 5; }
+.step { display: flex; align-items: center; gap: 12px; font-size: 15px; font-weight: 700; }
+.step i { width: 30px; height: 30px; border-radius: 50%; background: #FFC83D; color: #3A2500; font: 800 16px 'Baloo 2', sans-serif; font-style: normal; display: flex; align-items: center; justify-content: center; flex: none; }
+@keyframes pulsa { from { transform: scale(1); } to { transform: scale(1.05); } }
+
+/* ---------- Tela principal ---------- */
+#main { flex-direction: column; align-items: center; padding: 20px; background: linear-gradient(180deg, #0B1030 0%, #151A45 100%); }
+.board-row { height: 64px; display: flex; }
+.winner { position: absolute; top: 24px; left: 24px; right: 24px; bottom: 24px; border-radius: 28px; background: rgba(11,16,48,0.92); border: 1px solid rgba(255,255,255,0.12); display: none; flex-direction: column; align-items: center; justify-content: center; padding: 14px; }
+.winner.show { display: flex; }
+
+/* ---------- Tela inicial (widget) ---------- */
+#home { flex-direction: column; align-items: center; padding: 70px 22px 22px; background: linear-gradient(160deg, #3B2A7A 0%, #1E4E8C 48%, #0F7A83 100%); }
+.wgt { position: relative; width: 300px; height: 330px; border-radius: 30px; background: linear-gradient(180deg, #151A45 0%, #0B1030 100%); box-shadow: 0 18px 40px rgba(0,0,0,0.4); padding: 14px; display: flex; flex-direction: column; align-items: center; cursor: pointer; }
+.pencil { position: absolute; top: 10px; right: 10px; width: 40px; height: 40px; border-radius: 50%; border: 0; background: linear-gradient(180deg, #FFD65A 0%, #FFB814 100%); display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 3; }
+.appicon { width: 54px; height: 54px; border-radius: 18px; background: rgba(255,255,255,0.28); }
+
+/* ---------- Janelinha do lápis ---------- */
+#dialog { background: rgba(4,6,22,0.7); align-items: center; justify-content: center; z-index: 8; }
+#dialog .box { width: 350px; max-height: 800px; overflow-y: auto; border-radius: 28px; background: linear-gradient(180deg, #171C49 0%, #0D1233 100%); box-shadow: 0 30px 60px rgba(0,0,0,0.55); padding: 20px 18px 18px; scrollbar-width: none; }
+</style>
+</head>
+<body>
+
+<div id="top">
+  <div>
+    <h1>Moedinha</h1>
+    <p>Demonstração clicável do app de cara ou coroa para Android. O diferencial é o widget: gire a moeda direto da tela inicial.</p>
+  </div>
+</div>
+<div id="note">Toque no ícone da <b>Moedinha</b> na tela inicial para abrir o app no outro celular. Toque na moeda do widget para girar sem abrir o app. É uma simulação em página web; o app de verdade é nativo para Android. Código no <a href="https://github.com/deverasrenato/cara-ou-coroa">GitHub</a>.</div>
+
+<div id="stage"><div class="col" style="order: 2"><div class="cap">O app</div><div class="scaler" id="scaler-app"><div class="device" id="device-app">
+
+  <!-- Símbolos da moeda (desenhados uma vez e usados em todo lugar) -->
+  <svg width="0" height="0" style="position: absolute" aria-hidden="true">
+    <defs>
+      <radialGradient id="gold" cx="30%" cy="26%" r="95%">
+        <stop offset="0%" stop-color="#FFF0A8"></stop><stop offset="38%" stop-color="#FFD24F"></stop>
+        <stop offset="72%" stop-color="#F2AE12"></stop><stop offset="100%" stop-color="#C98500"></stop>
+      </radialGradient>
+      <symbol id="cara" viewBox="0 0 200 200">
+        <circle cx="100" cy="100" r="98" fill="url(#gold)"></circle>
+        <circle cx="100" cy="100" r="97" fill="none" stroke="#FFF0A8" stroke-opacity="0.7" stroke-width="1.5"></circle>
+        <circle cx="100" cy="100" r="86" fill="none" stroke="#8C5A00" stroke-opacity="0.3" stroke-width="3.5"></circle>
+        <g transform="translate(100 100) scale(1.05) translate(-100 -98)">
+          <g transform="translate(-1.6,-1.6)" fill="#7A4B00" fill-opacity="0.5"><circle cx="100" cy="70" r="27"></circle><path d="M48 152 C48 122 72 108 100 108 C128 108 152 122 152 152 Z"></path></g>
+          <g transform="translate(1.6,1.6)" fill="#FFF6C2" fill-opacity="0.8"><circle cx="100" cy="70" r="27"></circle><path d="M48 152 C48 122 72 108 100 108 C128 108 152 122 152 152 Z"></path></g>
+          <g fill="#F3B51C"><circle cx="100" cy="70" r="27"></circle><path d="M48 152 C48 122 72 108 100 108 C128 108 152 122 152 152 Z"></path></g>
+        </g>
+      </symbol>
+      <symbol id="coroa" viewBox="0 0 200 200">
+        <circle cx="100" cy="100" r="98" fill="url(#gold)"></circle>
+        <circle cx="100" cy="100" r="97" fill="none" stroke="#FFF0A8" stroke-opacity="0.7" stroke-width="1.5"></circle>
+        <circle cx="100" cy="100" r="86" fill="none" stroke="#8C5A00" stroke-opacity="0.3" stroke-width="3.5"></circle>
+        <g transform="translate(100 100) scale(1.7) translate(-50 -54)">
+          <g transform="translate(-1.6,-1.6)" fill="#7A4B00" fill-opacity="0.5"><path d="M16 70 L10 30 L33 50 L50 20 L67 50 L90 30 L84 70 Z"></path><rect x="16" y="74" width="68" height="14" rx="4"></rect></g>
+          <g transform="translate(1.6,1.6)" fill="#FFF6C2" fill-opacity="0.8"><path d="M16 70 L10 30 L33 50 L50 20 L67 50 L90 30 L84 70 Z"></path><rect x="16" y="74" width="68" height="14" rx="4"></rect></g>
+          <g fill="#F3B51C"><path d="M16 70 L10 30 L33 50 L50 20 L67 50 L90 30 L84 70 Z"></path><rect x="16" y="74" width="68" height="14" rx="4"></rect></g>
+        </g>
+      </symbol>
+    </defs>
+  </svg>
+
+  <!-- APP FECHADO (antes de tocar no ícone) -->
+  <section id="off" class="screen show">
+    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#6C74A6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="3"></rect><path d="M11 18h2"></path></svg>
+    <div>O app está fechado.<br>Toque no ícone da <b style="color:#FFC83D">Moedinha</b> na tela inicial ao lado.</div>
+  </section>
+
+  <!-- ABERTURA -->
+  <section id="splash" class="screen">
+    <div class="glow"></div>
+    <svg id="splash-coin" class="coin" width="220" height="220" viewBox="0 0 200 200" role="img" aria-label="Moeda girando"><use href="#cara"></use></svg>
+    <div class="title gold" style="position: relative; margin-top: 54px; font-size: 56px; line-height: 1; text-shadow: 0 3px 0 rgba(122,75,0,0.55)">Moedinha</div>
+    <div style="position: relative; margin-top: 14px; font-size: 18px; font-weight: 700; color: #E6E9FF">Cara ou coroa na ponta do dedo</div>
+    <div style="position: absolute; bottom: 34px; font-size: 14px; font-weight: 700; color: #A9B0D6">Versão 0.5.0</div>
+  </section>
+
+  <!-- BOAS-VINDAS -->
+  <section id="welcome" class="screen">
+    <div style="display: flex; align-items: center; gap: 6px">
+      <svg width="40" height="40" viewBox="0 0 200 200" aria-hidden="true"><use href="#cara"></use></svg>
+      <span class="title gold" style="font-size: 26px">Moedinha</span>
+    </div>
+    <div class="title" style="margin-top: 14px; font-size: 30px; line-height: 1.15; text-align: center">O melhor jeito de usar<br><span class="gold">é pelo widget</span></div>
+    <div style="margin-top: 10px; font-size: 15px; line-height: 1.45; text-align: center; color: #C9CEEE">Ponha a moeda na tela inicial e gire com um toque, sem abrir o app. Ela gira com animação e mostra o resultado ali mesmo.</div>
+    <div style="margin-top: 18px; width: 100%; border-radius: 28px; background: linear-gradient(135deg, #3B2A7A 0%, #1E4E8C 55%, #0F7A83 100%); padding: 14px; display: flex; align-items: center; justify-content: center; gap: 16px">
+      <div style="display: flex; flex-direction: column; gap: 14px" aria-hidden="true"><div class="appicon" style="width: 44px; height: 44px; border-radius: 14px"></div><div class="appicon" style="width: 44px; height: 44px; border-radius: 14px"></div><div class="appicon" style="width: 44px; height: 44px; border-radius: 14px"></div></div>
+      <div style="width: 180px; border-radius: 26px; background: linear-gradient(180deg, #151A45 0%, #0B1030 100%); border: 2px solid #FFC83D; padding: 10px; display: flex; flex-direction: column; align-items: center; animation: pulsa 1s ease-in-out infinite alternate">
+        <svg width="84" height="84" viewBox="0 0 200 200" aria-hidden="true"><use href="#cara"></use></svg>
+        <div class="title gold" style="font-size: 17px; line-height: 1.2">CARA</div>
+        <div class="title" style="font-size: 14px; line-height: 1.2">Cara ou Coroa?</div>
+        <div class="gold" style="font-size: 11px; font-weight: 700">Toque para girar</div>
+      </div>
+    </div>
+    <div class="card" style="margin-top: 14px; width: 100%; padding: 14px 16px; display: flex; flex-direction: column; gap: 12px; border-radius: 22px">
+      <div class="step"><i>1</i><span>Segure um espaço vazio da tela inicial</span></div>
+      <div class="step"><i>2</i><span>Toque em <b>Widgets</b> e procure <b>Moedinha</b></span></div>
+      <div class="step"><i>3</i><span>Arraste a moeda para a tela e toque para girar</span></div>
+    </div>
+    <div style="flex: 1 1 0"></div>
+    <button type="button" id="welcome-open" class="btn" style="width: 100%; height: 56px; font-size: 19px">Entendi, abrir o app</button>
+    <button type="button" id="welcome-toggle" class="chip" style="margin-top: 10px; width: 100%; height: 50px; border-color: #FFC83D; background: rgba(255,200,61,0.12); color: #FFE08A; font-size: 16px"></button>
+  </section>
+
+  <!-- TELA PRINCIPAL -->
+  <section id="main" class="screen scroll">
+    <div style="width: 100%; height: 40px; display: flex; align-items: center; justify-content: space-between; flex: none">
+      <span class="title gold" style="font-size: 24px">Moedinha</span>
+      <span class="card" style="font-size: 12px; font-weight: 700; color: #A9B0D6; border-radius: 999px; padding: 4px 10px">Versão 0.5.0</span>
+    </div>
+    <div style="position: relative; flex: none; margin-top: -10px; width: 320px; height: 320px; padding: 30px; border-radius: 50%; background: radial-gradient(circle, rgba(255,200,61,0.28) 0%, rgba(255,200,61,0.08) 45%, rgba(255,200,61,0) 70%); display: flex; align-items: center; justify-content: center">
+      <svg id="app-coin" class="coin" width="240" height="240" viewBox="0 0 200 200" role="button" aria-label="Moeda: toque para girar" style="cursor: pointer"><use href="#cara"></use></svg>
+      <div id="winner" class="winner">
+        <div id="winner-name" class="title gold" style="font-size: 36px; line-height: 1.1; text-align: center"></div>
+        <div style="font-size: 22px">venceu!</div>
+        <button type="button" id="replay" class="btn" style="margin-top: 16px; padding: 10px 24px; font-size: 17px">Jogar novamente?</button>
+        <button type="button" id="winner-reset" style="margin-top: 8px; padding: 10px; border: 0; background: none; color: #FF9E95; font: 800 14px 'Nunito', sans-serif; cursor: pointer">Zerar tudo</button>
+      </div>
+    </div>
+    <div id="app-result" class="title gold" style="flex: none; margin-top: -24px; width: 100%; height: 36px; text-align: center; font-size: 26px; line-height: 36px"></div>
+    <div id="app-board" class="card" style="flex: none; width: 100%; padding: 10px"></div>
+    <button type="button" id="app-flip" class="btn" style="flex: none; margin-top: 16px; width: 100%; height: 58px; font-size: 20px">Girar moeda</button>
+    <div style="flex: none; margin-top: 8px; font-size: 13px; color: #A9B0D6">ou deslize o dedo para cima na moeda</div>
+
+    <div class="title" style="flex: none; margin-top: 24px; width: 100%; font-size: 18px">Meus layouts</div>
+    <div id="app-presets" class="prow" style="flex: none; margin-top: 8px; width: 100%"></div>
+
+    <div class="title" style="flex: none; margin-top: 20px; width: 100%; font-size: 18px">Quantas vezes jogar?</div>
+    <div id="app-modes" style="flex: none; margin-top: 8px; width: 100%; display: flex; gap: 8px"></div>
+
+    <div class="card" style="flex: none; margin-top: 20px; width: 100%; padding: 16px">
+      <label class="f" for="app-q" style="margin-top: 0">Pergunta</label>
+      <input class="f" id="app-q" type="text" maxlength="40" placeholder="Pergunta, opcional (até 40 letras)">
+      <div class="title" style="margin-top: 16px; font-size: 16px">O que cada lado significa?</div>
+      <label class="f" for="app-h">Cara</label>
+      <input class="f" id="app-h" type="text" maxlength="20" placeholder="Cara (até 20 letras, ex.: Sim)">
+      <label class="f" for="app-t">Coroa</label>
+      <input class="f" id="app-t" type="text" maxlength="20" placeholder="Coroa (até 20 letras, ex.: Não)">
+      <button type="button" id="app-savepreset" class="chip" style="margin-top: 16px; height: 40px; padding: 0 16px">Salvar como layout</button>
+      <label style="display: flex; align-items: center; gap: 12px; margin-top: 16px; font-size: 15px; font-weight: 600; cursor: pointer"><input id="app-vib" type="checkbox" style="width: 22px; height: 22px; accent-color: #FFC83D">Vibrar quando a moeda parar</label>
+    </div>
+    <button type="button" id="app-reset" class="btn-danger" style="flex: none; margin-top: 20px; width: 100%; height: 52px">Zerar tudo</button>
+    <div style="flex: none; margin-top: 16px; max-width: 320px; text-align: center; font-size: 13px; line-height: 1.45; color: #A9B0D6">Dica: segure a tela inicial, toque em Widgets e adicione a Moedinha para girar sem abrir o app.</div>
+    <button type="button" id="app-review" style="flex: none; margin: 8px 0 20px; padding: 12px; border: 0; background: none; color: #FFC83D; font: 800 14px 'Nunito', sans-serif; cursor: pointer">Ver as boas-vindas do widget</button>
+  </section>
+  <div id="app-modal" class="modal"><div class="mbox"></div></div>
+
+</div></div></div>
+<div class="col" style="order: 1"><div class="cap">Tela inicial e widget</div><div class="scaler" id="scaler-home"><div class="device" id="device-home">
+
+  <!-- TELA INICIAL COM O WIDGET -->
+  <section id="home" class="screen show">
+    <div style="font-size: 20px; font-weight: 700; color: rgba(255,255,255,0.85); align-self: flex-start; margin-bottom: 18px">Toque na moeda do widget</div>
+    <div id="wgt" class="wgt">
+      <button type="button" id="pencil" class="pencil" aria-label="Digitar pergunta"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3A2500" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"></path><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg></button>
+      <div style="position: relative; margin-top: 8px; width: 170px; height: 170px; border-radius: 50%; background: radial-gradient(circle, rgba(255,200,61,0.22) 0%, rgba(255,200,61,0) 70%); display: flex; align-items: center; justify-content: center">
+        <svg id="wgt-coin" class="coin" width="130" height="130" viewBox="0 0 200 200" role="img" aria-label="Moeda"><use href="#cara"></use></svg>
+        <div id="wgt-winner" class="winner" style="top: 0; left: -65px; right: -65px; bottom: -80px; z-index: 2"></div>
+      </div>
+      <div id="wgt-result" class="title gold" style="margin-top: 2px; font-size: 22px; line-height: 1.1; height: 26px"></div>
+      <div id="wgt-board" style="width: 100%"></div>
+    </div>
+    <div class="apps">
+      <div class="app" title="Só enfeite nesta demonstração">
+        <span class="ic" style="background: linear-gradient(160deg, #4B5563, #1F2937)"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1Z"></path><circle cx="12" cy="13" r="3.6"></circle></svg></span>Câmera
+      </div>
+      <div class="app" title="Só enfeite nesta demonstração">
+        <span class="ic" style="background: linear-gradient(160deg, #F472B6, #FB923C)"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3"></rect><circle cx="9" cy="10" r="1.6"></circle><path d="M21 16l-5-5-8 9"></path></svg></span>Galeria
+      </div>
+      <div class="app" title="Só enfeite nesta demonstração">
+        <span class="ic" style="background: #fff"><span style="width: 36px; height: 36px; border-radius: 50%; background: conic-gradient(#EA4335 0 33%, #FBBC05 0 66%, #34A853 0 100%); display: flex; align-items: center; justify-content: center"><span style="width: 14px; height: 14px; border-radius: 50%; background: #4285F4; border: 2.5px solid #fff"></span></span></span>Chrome
+      </div>
+      <button type="button" class="app me" id="icon-me" aria-label="Abrir o app Moedinha">
+        <span class="ic" style="background: linear-gradient(160deg, #2B3180, #0B1030)"><svg width="44" height="44" viewBox="0 0 200 200" aria-hidden="true"><use href="#coroa"></use></svg></span>Moedinha
+      </button>
+    </div>
+  </section>
+
+  <!-- JANELINHA DO LÁPIS -->
+  <section id="dialog" class="screen">
+    <div class="box">
+      <div class="title" style="font-size: 22px">Girar a moeda</div>
+      <div id="dlg-presets" class="prow" style="margin-top: 10px"></div>
+      <div id="dlg-modes" style="margin-top: 12px; display: flex; gap: 8px"></div>
+      <label class="f" for="dlg-q">Pergunta</label>
+      <input class="f" id="dlg-q" type="text" maxlength="40" placeholder="Pergunta, opcional (até 40 letras)">
+      <label class="f" for="dlg-h">Cara</label>
+      <input class="f" id="dlg-h" type="text" maxlength="20" placeholder="Cara (até 20 letras, ex.: Sim)">
+      <label class="f" for="dlg-t">Coroa</label>
+      <input class="f" id="dlg-t" type="text" maxlength="20" placeholder="Coroa (até 20 letras, ex.: Não)">
+      <button type="button" id="dlg-savepreset" class="chip" style="margin-top: 14px; height: 40px; padding: 0 16px">Salvar como layout</button>
+      <div style="margin-top: 12px; font-size: 13px; line-height: 1.4; text-align: center; color: #B4BBE0">Ao salvar, o jogo atual é zerado e o widget fica esperando o giro.</div>
+      <button type="button" id="dlg-save" class="btn" style="margin-top: 12px; width: 100%; height: 54px; font-size: 19px">Salvar</button>
+      <button type="button" id="dlg-reset" class="btn-danger" style="margin-top: 10px; width: 100%; height: 48px; font-size: 15px">Zerar tudo</button>
+      <button type="button" id="dlg-close" style="margin-top: 6px; width: 100%; height: 40px; border: 0; background: none; color: #A9B0D6; font: 700 14px 'Nunito', sans-serif; cursor: pointer">Fechar</button>
+    </div>
+  </section>
+  <div id="home-modal" class="modal"><div class="mbox"></div></div>
+
+</div></div></div></div>
+
+<script>
+// ============================================================
+// Moedinha — demonstração em página web
+// Imita as regras do app Android (CoinStore.kt e Coin.kt) em JavaScript simples.
+// ============================================================
+
+var CARA = 0;
+var COROA = 1;
+var FRAME_MS = 18 * 70; // mesma duração do giro no app (18 imagens de 70 ms)
+
+// ---------- Estado (fica no navegador, em localStorage) ----------
+var KEY = 'moedinha_demo';
+var S = {
+  mode: 1,              // 1 = Cara ou Coroa?, 5 = Melhor de 5, 0 = Livre
+  question: '',
+  labels: ['', ''],     // textos de cara e coroa
+  vibrate: true,
+  score: [0, 0],
+  history: [],          // o que saiu em cada giro (0 = cara, 1 = coroa)
+  side: -1,             // último lado (-1 = ainda não girou)
+  welcomeSeen: false,
+  welcomeAlways: false
+};
+
+function load() {
+  try {
+    var saved = JSON.parse(localStorage.getItem(KEY));
+    if (saved) { for (var k in saved) { S[k] = saved[k]; } }
+  } catch (e) { /* sem armazenamento: segue com o padrão */ }
+}
+function save() {
+  try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { }
+}
+
+// ---------- Regras do jogo ----------
+function sideName(side) { return side === CARA ? 'CARA' : 'COROA'; }
+function sideLabel(side) { return S.labels[side].trim() || sideName(side); }
+function wins() { return S.mode === 1 ? 1 : 3; }
+function isFinished() { return S.mode !== 0 && Math.max(S.score[0], S.score[1]) >= wins(); }
+function winnerSide() { return S.score[0] >= wins() ? CARA : COROA; }
+function lastSide() { return S.side < 0 ? CARA : S.side; }
+function startNewGame() { S.score = [0, 0]; S.history = []; S.side = -1; save(); }
+function saveResult(side) {
+  if (isFinished()) { startNewGame(); }
+  S.side = side; S.score[side]++; S.history.push(side); save();
+}
+function setMode(mode) { if (mode !== S.mode) { S.mode = mode; startNewGame(); } save(); }
+function resetAll() {
+  var vib = S.vibrate, seen = S.welcomeSeen, always = S.welcomeAlways;
+  S = { mode: 1, question: '', labels: ['', ''], vibrate: vib, score: [0, 0], history: [], side: -1, welcomeSeen: seen, welcomeAlways: always };
+  save();
+}
+
+// ---------- Moeda: mesma conta do Coin.kt ----------
+function drawCoin(el, side, spin, lift) {
+  el.querySelector('use').setAttribute('href', side === CARA ? '#cara' : '#coroa');
+  var s = Math.max(Math.abs(spin), 0.06);
+  el.style.transform = 'translateY(' + (-lift) + 'px) scaleY(' + s + ')';
+}
+function stillCoin(el) { drawCoin(el, lastSide(), 1, 0); }
+
+// startSide: lado antes de girar; result: lado final; baseTurns: meios giros (8 normal)
+function animateCoin(el, startSide, result, ms, baseTurns, scale, onEnd) {
+  var halfTurns = baseTurns + (startSide === result ? 0 : 1);
+  var t0 = null;
+  function step(now) {
+    if (t0 === null) { t0 = now; }
+    var p = Math.min((now - t0) / ms, 1);
+    var eased = 1 - (1 - p) * (1 - p);
+    var spin = Math.cos(Math.PI * halfTurns * eased);
+    var side = spin >= 0 ? startSide : 1 - startSide;
+    var lift = Math.sin(Math.PI * p) * 60 * scale;
+    drawCoin(el, side, spin, lift);
+    if (p < 1) { requestAnimationFrame(step); } else { drawCoin(el, result, 1, 0); onEnd(); }
+  }
+  requestAnimationFrame(step);
+}
+
+// ---------- Cartão com os textos (igual ao currentBoard do app) ----------
+function dots(list, size) {
+  var html = '';
+  for (var i = 0; i < list.length; i++) {
+    html += '<span class="dot' + (list[i] === CARA ? ' f' : '') + '" style="width:' + size + 'px;height:' + size + 'px;margin:0 3px"></span>';
+  }
+  return html;
+}
+function boardHtml(hint, big) {
+  var q = S.question.trim();
+  var played = S.side >= 0;
+  var f = big ? 1 : 0.85;
+  if (S.mode === 1) {
+    return '<div class="title" style="height:' + (40 * f) + 'px;text-align:center;font-size:' + (24 * f) + 'px;line-height:' + (40 * f) + 'px">' + esc(q || 'Cara ou Coroa?') + '</div>' +
+      '<div style="height:' + (30 * f) + 'px;text-align:center;font-weight:800;font-size:' + (20 * f) + 'px;line-height:' + (30 * f) + 'px">' + (played ? esc(S.labels[S.side].trim()) : '') + '</div>' +
+      '<div style="height:' + (26 * f) + 'px;text-align:center;font-weight:700;font-size:' + (18 * f) + 'px;line-height:' + (26 * f) + 'px;color:#FFC83D">' + hint + '</div>';
+  }
+  var first = (S.mode === 5 ? 'Melhor de 5' : 'Livre (sem fim)');
+  if (!played) {
+    return '<div class="title" style="height:' + (40 * f) + 'px;text-align:center;font-size:' + (24 * f) + 'px;line-height:' + (40 * f) + 'px">' + esc(q || first) + '</div>' +
+      '<div style="height:' + (30 * f) + 'px"></div>' +
+      '<div style="height:' + (26 * f) + 'px;text-align:center;font-weight:700;font-size:' + (18 * f) + 'px;line-height:' + (26 * f) + 'px;color:#FFC83D">' + hint + '</div>';
+  }
+  return '<div class="title" style="height:' + (40 * f) + 'px;text-align:center;font-size:' + (24 * f) + 'px;line-height:' + (40 * f) + 'px">' + esc(q) + '</div>' +
+    '<div class="board-row" style="height:' + (64 * f) + 'px">' +
+    '<div style="flex:1 1 0;min-width:0;display:flex;align-items:flex-end;justify-content:flex-end;text-align:right;font-weight:800;font-size:' + (22 * f) + 'px;overflow:hidden">' + esc(sideLabel(CARA)) + '</div>' +
+    '<div style="display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:0 10px"><div>' + dots([CARA, COROA], 11 * f) + '</div><div class="title gold" style="font-size:' + (28 * f) + 'px;line-height:1.1">' + S.score[0] + ' x ' + S.score[1] + '</div></div>' +
+    '<div style="flex:1 1 0;min-width:0;display:flex;align-items:flex-end;font-weight:800;font-size:' + (22 * f) + 'px;overflow:hidden">' + esc(sideLabel(COROA)) + '</div></div>' +
+    '<div style="height:' + (26 * f) + 'px;display:flex;align-items:center;justify-content:center">' + dots(S.history, 14 * f) + '</div>';
+}
+function esc(text) {
+  return String(text).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+// ---------- Desenhar as telas ----------
+var flipping = false;
+var version = 0; // sobe quando o jogo muda no meio de um giro
+var winnerShown = false;
+
+function winnerHtml(small) {
+  return '<div class="title gold" style="font-size:' + (small ? 40 : 36) + 'px;line-height:1.1;text-align:center">' + esc(sideLabel(winnerSide())) + '</div>' +
+    '<div style="font-size:' + (small ? 20 : 22) + 'px">venceu!</div>' +
+    '<button type="button" data-act="replay" class="btn" style="margin-top:14px;padding:10px 24px;font-size:16px">Jogar novamente?</button>' +
+    '<button type="button" data-act="reset" style="margin-top:8px;padding:10px;border:0;background:none;color:#FF9E95;font:800 14px Nunito,sans-serif;cursor:pointer">Zerar tudo</button>';
+}
+
+function renderAll() {
+  var showWinner = winnerShown && isFinished() && S.mode !== 1;
+  var res = S.side < 0 ? '' : sideName(S.side);
+
+  // app
+  if (!flipping) { stillCoin(document.getElementById('app-coin')); stillCoin(document.getElementById('wgt-coin')); }
+  document.getElementById('app-result').textContent = res;
+  document.getElementById('app-board').innerHTML = boardHtml('Toque na moeda', true);
+  var w = document.getElementById('winner');
+  w.classList.toggle('show', showWinner);
+  document.getElementById('winner-name').textContent = sideLabel(winnerSide());
+  renderModes(document.getElementById('app-modes'), S.mode, function (m) { changeMode(m); });
+  document.getElementById('app-vib').checked = S.vibrate;
+
+  // widget
+  document.getElementById('wgt-result').textContent = res;
+  document.getElementById('wgt-board').innerHTML = boardHtml('Toque para girar', false);
+  var ww = document.getElementById('wgt-winner');
+  ww.classList.toggle('show', showWinner);
+  if (showWinner) { ww.style.background = 'rgba(11,16,48,0.96)'; ww.innerHTML = winnerHtml(true); }
+}
+
+function renderModes(box, current, onPick) {
+  var items = [[1, 'Cara ou Coroa?'], [5, 'Melhor de 5'], [0, 'Livre (sem fim)']];
+  box.innerHTML = '';
+  items.forEach(function (it) {
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'mode' + (it[0] === current ? ' on' : '');
+    b.textContent = it[1];
+    b.addEventListener('click', function () { onPick(it[0]); });
+    box.appendChild(b);
+  });
+}
+
+function changeMode(m) {
+  if (m === S.mode) { return; }
+  version++; flipping = false; winnerShown = false;
+  setMode(m);
+  renderAll();
+}
+
+// ---------- Girar a moeda (app e widget) ----------
+function flip(coinEl, scale) {
+  if (flipping) { return; }
+  flipping = true;
+  var myVersion = version;
+
+  function go() {
+    var startSide = lastSide();
+    var result = Math.random() < 0.5 ? CARA : COROA;
+    animateCoin(coinEl, startSide, result, FRAME_MS, 8, scale, function () {
+      if (myVersion !== version) { return; }
+      saveResult(result);
+      flipping = false;
+      if (S.vibrate && navigator.vibrate) { navigator.vibrate(40); }
+      renderAll();
+      // Série terminada: espera um instante para ver a moeda e mostra o vencedor
+      if (isFinished() && S.mode !== 1) {
+        setTimeout(function () {
+          if (myVersion !== version) { return; }
+          winnerShown = true; renderAll();
+          if (S.vibrate && navigator.vibrate) { navigator.vibrate(150); }
+        }, 1200);
+      }
+    });
+  }
+
+  // Girar depois do fim = "jogar novamente": o balão fecha primeiro, só depois a moeda gira
+  if (isFinished()) {
+    version++; myVersion = version;
+    winnerShown = false; startNewGame(); renderAll();
+    setTimeout(go, 200);
+  } else {
+    go();
+  }
+}
+
+function replay() { version++; flipping = false; winnerShown = false; startNewGame(); renderAll(); }
+function askReset() {
+  if (confirm('Zerar tudo?\n\nIsso apaga o placar, a pergunta e os textos, e volta ao modo "Cara ou Coroa?".')) {
+    version++; flipping = false; winnerShown = false; resetAll(); fillInputs(); renderAll();
+  }
+}
+
+function fillInputs() {
+  document.getElementById('app-q').value = S.question;
+  document.getElementById('app-h').value = S.labels[0];
+  document.getElementById('app-t').value = S.labels[1];
+}
+
+// ---------- Meus layouts (igual ao Presets.kt) ----------
+// Ficam em outra chave do localStorage: "Zerar tudo" não apaga os layouts.
+var PKEY = 'moedinha_demo_presets';
+var PMAX = 5;      // quantidade de vagas
+var NAME_MAX = 20; // letras do nome
+var presets = [];  // cada um: { name, mode, question, heads, tails }
+
+function loadPresets() {
+  try { presets = JSON.parse(localStorage.getItem(PKEY)) || []; } catch (e) { presets = []; }
+}
+function savePresets() {
+  try { localStorage.setItem(PKEY, JSON.stringify(presets)); } catch (e) { }
+}
+// Procura o layout com esse nome (sem diferenciar maiúsculas). -1 se não achar.
+function presetIndex(name) {
+  for (var i = 0; i < presets.length; i++) {
+    if (presets[i].name.toLowerCase() === name.toLowerCase()) { return i; }
+  }
+  return -1;
+}
+
+// Escolher um layout: configura tudo e começa um jogo novo, esperando o giro
+function applyPreset(p) {
+  version++; flipping = false; winnerShown = false;
+  S.mode = p.mode; S.question = p.question; S.labels = [p.heads, p.tails];
+  startNewGame();
+  fillInputs();
+  renderAll();
+}
+
+// Aviso rápido no pé do celular (como o Toast do Android)
+function toast(deviceId, text) {
+  var d = document.getElementById(deviceId);
+  var t = document.createElement('div');
+  t.className = 'toast';
+  t.textContent = text;
+  d.appendChild(t);
+  setTimeout(function () { t.remove(); }, 2200);
+}
+
+// Janelinha de pergunta dentro do celular (no lugar do AlertDialog)
+// fields: texto de entrada (ou null); buttons: [[texto, função]]
+function openModal(modalId, title, inputValue, okText, onOk) {
+  var m = document.getElementById(modalId);
+  var box = m.firstElementChild;
+  box.innerHTML = '<div class="title" style="font-size:20px">' + esc(title) + '</div>' +
+    (inputValue === null ? '' : '<input class="f" type="text" maxlength="' + NAME_MAX + '" placeholder="Nome do layout (até 20 letras)" style="margin-top:12px">') +
+    '<div class="mbtns"><button type="button" data-k="no">Cancelar</button><button type="button" data-k="ok">' + okText + '</button></div>';
+  var input = box.querySelector('input');
+  if (input) { input.value = inputValue; setTimeout(function () { input.focus(); }, 0); }
+  box.querySelector('[data-k="no"]').onclick = function () { m.classList.remove('show'); };
+  box.querySelector('[data-k="ok"]').onclick = function () { m.classList.remove('show'); onOk(input ? input.value.trim() : ''); };
+  m.classList.add('show');
+}
+
+// "Salvar como layout": pede o nome (sugestão = a pergunta) e guarda mode/pergunta/textos
+function askSavePreset(modalId, deviceId, mode, question, heads, tails) {
+  openModal(modalId, 'Salvar como layout', question.trim().slice(0, NAME_MAX), 'Salvar', function (name) {
+    if (name === '') { toast(deviceId, 'Digite um nome para o layout'); return; }
+    var i = presetIndex(name);
+    if (i < 0 && presets.length >= PMAX) { toast(deviceId, 'Você já tem 5 layouts. Apague um segurando o dedo nele.'); return; }
+    var p = { name: name, mode: mode, question: question.trim(), heads: heads.trim(), tails: tails.trim() };
+    if (i >= 0) { presets[i] = p; } else { presets.push(p); }
+    savePresets();
+    toast(deviceId, i >= 0 ? 'Layout atualizado' : 'Layout salvo');
+    renderPresets();
+  });
+}
+
+// Desenha a fileira de layouts. Tocar aplica; segurar o dedo (ou botão direito) pergunta se apaga.
+function fillPresetRow(box, modalId, onApplied) {
+  box.innerHTML = '';
+  if (presets.length === 0) {
+    box.innerHTML = '<span class="phint">Nenhum layout salvo ainda</span>';
+    return;
+  }
+  presets.forEach(function (p) {
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'pchip';
+    b.textContent = p.name;
+    var timer = null, held = false;
+    function askDelete() {
+      held = true;
+      openModal(modalId, 'Apagar o layout "' + p.name + '"?', null, 'Apagar', function () {
+        presets.splice(presetIndex(p.name), 1);
+        savePresets();
+        renderPresets();
+      });
+    }
+    b.addEventListener('pointerdown', function () { held = false; timer = setTimeout(askDelete, 600); });
+    b.addEventListener('pointerup', function () { clearTimeout(timer); });
+    b.addEventListener('pointerleave', function () { clearTimeout(timer); });
+    b.addEventListener('contextmenu', function (e) { e.preventDefault(); clearTimeout(timer); askDelete(); });
+    b.addEventListener('click', function () { if (!held) { applyPreset(p); onApplied(); } });
+    box.appendChild(b);
+  });
+}
+function renderPresets() {
+  fillPresetRow(document.getElementById('app-presets'), 'app-modal', function () { });
+  fillPresetRow(document.getElementById('dlg-presets'), 'home-modal', function () {
+    document.getElementById('dialog').classList.remove('show');
+  });
+}
+
+// ---------- Telas e fluxo ----------
+// Mostra uma tela dentro do celular do app (a tela inicial fica sempre no outro celular)
+function show(id) {
+  ['off', 'splash', 'welcome', 'main'].forEach(function (s) {
+    document.getElementById(s).classList.toggle('show', s === id);
+  });
+}
+
+function showWelcome(fromMain) {
+  var btn = document.getElementById('welcome-open');
+  btn.onclick = function () {
+    S.welcomeSeen = true; save();
+    show('main');
+    renderAll();
+  };
+  paintToggle();
+  show('welcome');
+}
+function paintToggle() {
+  var t = document.getElementById('welcome-toggle');
+  if (S.welcomeAlways) {
+    t.textContent = 'Mostrar sempre que abrir o app';
+  } else {
+    t.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFE08A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-4px;margin-right:10px"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>Não mostrar de novo';
+  }
+}
+
+var splashing = false;
+// Tocar no ícone da Moedinha: abre o app no outro celular
+function startApp() {
+  if (splashing) { return; }
+  splashing = true;
+  document.getElementById('icon-me').classList.add('used');
+  show('splash');
+  var coin = document.getElementById('splash-coin');
+  drawCoin(coin, CARA, 1, 0);
+  // Giro lento: 4 meios giros em 2,6 segundos, termina no mesmo lado
+  animateCoin(coin, CARA, CARA, 2600, 4, 0.8, function () {
+    setTimeout(function () {
+      splashing = false;
+      if (S.welcomeAlways || !S.welcomeSeen) { showWelcome(false); } else { show('main'); renderAll(); }
+    }, 300);
+  });
+}
+
+// ---------- Ligar os botões ----------
+function init() {
+  load();
+  loadPresets();
+  renderPresets();
+  fillInputs();
+  winnerShown = isFinished(); // se a página reabrir com a série terminada, mostra o vencedor
+
+  document.getElementById('app-coin').addEventListener('click', function () { flip(this, 1); });
+  document.getElementById('app-flip').addEventListener('click', function () { flip(document.getElementById('app-coin'), 1); });
+  document.getElementById('wgt').addEventListener('click', function (e) {
+    if (e.target.closest('#pencil') || e.target.closest('[data-act]')) { return; }
+    flip(document.getElementById('wgt-coin'), 0.55);
+  });
+
+  // Botões de dentro do balão do widget (criados a cada desenho)
+  document.getElementById('wgt-winner').addEventListener('click', function (e) {
+    var act = e.target.getAttribute('data-act');
+    if (act === 'replay') { replay(); }
+    if (act === 'reset') { askReset(); }
+  });
+  document.getElementById('replay').addEventListener('click', replay);
+  document.getElementById('winner-reset').addEventListener('click', askReset);
+  document.getElementById('app-reset').addEventListener('click', askReset);
+
+  // Campos do app: guardam na hora
+  document.getElementById('app-q').addEventListener('input', function () { S.question = this.value; save(); renderAll(); });
+  document.getElementById('app-h').addEventListener('input', function () { S.labels[0] = this.value; save(); renderAll(); });
+  document.getElementById('app-t').addEventListener('input', function () { S.labels[1] = this.value; save(); renderAll(); });
+  document.getElementById('app-vib').addEventListener('change', function () { S.vibrate = this.checked; save(); });
+
+  document.getElementById('welcome-toggle').addEventListener('click', function () {
+    S.welcomeAlways = !S.welcomeAlways; save(); paintToggle();
+  });
+  document.getElementById('app-review').addEventListener('click', function () { showWelcome(true); });
+
+  // Janelinha do lápis
+  var dlgMode = S.mode;
+  function paintDlgModes() { renderModes(document.getElementById('dlg-modes'), dlgMode, function (m) { dlgMode = m; paintDlgModes(); }); }
+  document.getElementById('pencil').addEventListener('click', function () {
+    dlgMode = S.mode; paintDlgModes();
+    document.getElementById('dlg-q').value = S.question;
+    document.getElementById('dlg-h').value = S.labels[0];
+    document.getElementById('dlg-t').value = S.labels[1];
+    document.getElementById('dialog').classList.add('show');
+  });
+  document.getElementById('dlg-close').addEventListener('click', function () { document.getElementById('dialog').classList.remove('show'); });
+  document.getElementById('dlg-save').addEventListener('click', function () {
+    version++; flipping = false; winnerShown = false;
+    S.mode = dlgMode;
+    S.question = document.getElementById('dlg-q').value;
+    S.labels = [document.getElementById('dlg-h').value, document.getElementById('dlg-t').value];
+    startNewGame(); // salvar começa um jogo novo
+    fillInputs();
+    document.getElementById('dialog').classList.remove('show');
+    renderAll();
+  });
+  document.getElementById('app-savepreset').addEventListener('click', function () {
+    askSavePreset('app-modal', 'device-app', S.mode, S.question, S.labels[0], S.labels[1]);
+  });
+  document.getElementById('dlg-savepreset').addEventListener('click', function () {
+    askSavePreset('home-modal', 'device-home', dlgMode,
+      document.getElementById('dlg-q').value, document.getElementById('dlg-h').value, document.getElementById('dlg-t').value);
+  });
+  document.getElementById('dlg-reset').addEventListener('click', function () {
+    document.getElementById('dialog').classList.remove('show');
+    askReset();
+  });
+
+  document.getElementById('icon-me').addEventListener('click', startApp);
+
+  // Cabe os dois celulares na janela: lado a lado se couber, senão um embaixo do outro
+  function fit() {
+    var w = window.innerWidth, h = window.innerHeight;
+    var side = Math.min(1, (h - 190) / 844, (w - 40) / (390 * 2 + 40));
+    var s = side;
+    if (side < 0.6) { s = Math.min(1, (w - 16) / 390); } // tela estreita: empilha
+    if (s < 0.4) { s = 0.4; }
+    ['scaler-app', 'scaler-home'].forEach(function (id) {
+      var sc = document.getElementById(id);
+      sc.style.width = (390 * s) + 'px';
+      sc.style.height = (844 * s) + 'px';
+      sc.firstElementChild.style.transform = 'scale(' + s + ')';
+    });
+  }
+  window.addEventListener('resize', fit);
+  fit();
+
+  renderAll();
+  show('off');
+}
+
+init();
+</script>
+</body>
+</html>

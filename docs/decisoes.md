@@ -187,6 +187,14 @@ Este arquivo registra **o que foi decidido, por quê, e o que foi descartado**. 
 - **Alternativas descartadas:** PIX ou página de apoio (Buy Me a Coffee, Ko-fi) dentro do app (risco com a política da loja e expõe dados do usuário); começar já pelo Billing (exige conta, perfil de pagamentos e app na loja).
 - **Consequências:** a seção de privacidade e o formulário "Segurança dos dados" precisarão ser ajustados na Fase E; a regra "poucas bibliotecas novas" ganha uma exceção (Play Billing). Detalhes em `docs/publicacao.md`.
 
+### D21 — Demonstração clicável em página web (GitHub Pages)
+- **Data:** 15/11/2026 · **Status:** Vigente
+- **Contexto:** o usuário quer mostrar o app para outras pessoas (colegas, professores, portfólio) sem precisar mandar o APK. O repositório é público.
+- **Decisão:** uma página única `docs/demo/index.html` (HTML, CSS e JavaScript simples, sem biblioteca) simula o app: abertura, boas-vindas, tela principal com os 3 modos, placar e vencedor, e uma tela inicial com o widget e a janelinha do lápis. Mostra **dois celulares lado a lado**: um com a tela inicial (widget e ícones de Câmera, Galeria, Chrome e Moedinha) e outro com o app, que começa fechado e abre quando o visitante toca no ícone da Moedinha. Os dois usam o mesmo estado, então girar em um atualiza o outro. Usa as mesmas regras do `CoinStore.kt` e a mesma conta de giro do `Coin.kt`. Fica publicada pelo **GitHub Pages**, com a fonte `main` e a pasta `/docs`. O arquivo `docs/.nojekyll` evita que o GitHub processe os `.md` como site.
+- **Fundamento:** é de graça, não precisa de servidor nem de conta em outro serviço, e atualiza sozinha a cada envio para a `main`. Quem não tem Android consegue ver como o app funciona.
+- **Alternativas descartadas:** Vercel/Netlify (serviço a mais para cuidar); vídeo ou GIF (não dá para mexer); emulador na web (pesado e inexistente de graça para este caso).
+- **Consequências:** é uma **recriação** do app, não o app rodando, então pode divergir do Android em detalhes (por exemplo, a vibração só funciona em alguns celulares). Quando uma regra do app mudar, a demo precisa ser atualizada junto. A demo foi atualizada para a versão 0.5.0 e já inclui "Meus layouts" (D19): salvar, escolher e apagar (segurando o dedo, ou botão direito no computador). Os dados da demo ficam só no navegador (`localStorage`).
+
 ---
 
 ## Histórico (linha do tempo)

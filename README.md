@@ -34,6 +34,9 @@ Sim     2 x 1     Não
 9. **"Zerar tudo"** (no app e na janelinha do lápis, com confirmação) apaga placar, pergunta e textos e volta ao modo "Cara ou Coroa?".
 10. A moeda vibra quando para (dá para desligar no app). Limites de texto: 20 letras para cara e coroa, 40 para a pergunta. O app e o widget guardam o mesmo estado e mostram sempre o mesmo.
 
+## Demonstração online
+Uma simulação clicável do app roda em uma página web (pasta `docs/demo`), para quem não tem Android ver como funciona. Aparecem dois celulares lado a lado: a tela inicial com o widget e o app, que abre ao tocar no ícone da Moedinha. Dá para ver: abertura, boas-vindas, os 3 modos, placar, vencedor, widget, janelinha do lápis e "Meus layouts" (salvar, escolher e apagar). Depois de ativar o GitHub Pages (Settings, Pages, fonte `main`, pasta `/docs`), o endereço é `https://deverasrenato.github.io/cara-ou-coroa/demo/`. É uma recriação em JavaScript, não o app de verdade.
+
 ## Tecnologias
 - [Kotlin](https://kotlinlang.org) e o [Android Studio](https://developer.android.com/studio)
 - Layouts em XML (telas tradicionais do Android, sem bibliotecas extras além do AndroidX)
