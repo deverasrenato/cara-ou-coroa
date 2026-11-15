@@ -73,6 +73,7 @@ class CoinWidgetProvider : AppWidgetProvider() {
                 }
 
                 CoinStore.saveResult(appContext, result)
+                vibrate(appContext, 40) // toquinho quando a moeda para
 
                 // Mostra o placar novo, ainda sem a camada do vencedor (a moeda aparece parada)
                 for (id in ids) {
@@ -85,6 +86,7 @@ class CoinWidgetProvider : AppWidgetProvider() {
                     for (id in ids) {
                         showResult(appContext, manager, id, true)
                     }
+                    vibrate(appContext, 150) // vibração mais longa para o vencedor
                 }
             } finally {
                 isFlipping = false
@@ -112,7 +114,7 @@ class CoinWidgetProvider : AppWidgetProvider() {
             val texts = if (CoinStore.hasResult(context)) {
                 boardTexts(context)
             } else {
-                startBoard("Toque para girar")
+                readyBoard(context, "Toque para girar")
             }
             for (i in 0..4) {
                 views.setTextViewText(BOARD_IDS[i], texts[i])
@@ -123,6 +125,9 @@ class CoinWidgetProvider : AppWidgetProvider() {
             if (showWinner && winner >= 0) {
                 views.setViewVisibility(R.id.winner_layer, View.VISIBLE)
                 views.setTextViewText(R.id.winner_name, sideLabel(context, winner))
+                // No modo "Cara ou Coroa?" (1 giro) não faz sentido escrever "venceu!"
+                val suffixVisibility = if (CoinStore.isSingleMode(context)) View.GONE else View.VISIBLE
+                views.setViewVisibility(R.id.winner_suffix, suffixVisibility)
             } else {
                 views.setViewVisibility(R.id.winner_layer, View.GONE)
             }
@@ -144,6 +149,15 @@ class CoinWidgetProvider : AppWidgetProvider() {
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
             views.setOnClickPendingIntent(R.id.replay_button, replayPending)
+
+            // Tocar em "Zerar tudo" (na camada do vencedor) abre a caixa de confirmação
+            val resetIntent = Intent(context, ConfirmResetActivity::class.java)
+            resetIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            val resetPending = PendingIntent.getActivity(
+                context, 3, resetIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+            views.setOnClickPendingIntent(R.id.winner_reset_button, resetPending)
 
             // Tocar no botão do lápis abre a janelinha para digitar a pergunta
             val editIntent = Intent(context, QuickFlipActivity::class.java)

@@ -1,6 +1,8 @@
 package com.deverasrenato.caraoucoroa
 
 import android.content.Context
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.widget.RadioGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -43,8 +45,7 @@ object CoinStore {
     // Guarda o resultado de um giro e atualiza o placar e a sequência
     fun saveResult(context: Context, side: Int) {
         // Por segurança: se a série já tinha terminado, começa uma nova
-        // No modo "1 vez" cada giro vale sozinho: não acumula nada
-        if (isSeriesFinished(context) || isSingleMode(context)) {
+        if (isSeriesFinished(context)) {
             resetScores(context)
         }
 
@@ -73,7 +74,7 @@ object CoinStore {
         return 1
     }
 
-    // Modo de girar só uma vez: sem placar, mostra só o resultado do último giro
+    // Modo "Cara ou Coroa?": um giro só, depois pergunta "Jogar novamente?"
     fun isSingleMode(context: Context): Boolean {
         return getSeriesSize(context) == 1
     }
@@ -95,9 +96,10 @@ object CoinStore {
         return getSeriesSize(context) / 2 + 1
     }
 
-    // Nos modos "1 vez" e livre a série nunca termina (não há vencedor)
+    // No modo livre a série nunca termina. No modo "Cara ou Coroa?" (1 giro) ela termina
+    // no primeiro giro, porque winsNeeded é 1.
     fun isSeriesFinished(context: Context): Boolean {
-        if (isFreeMode(context) || isSingleMode(context)) {
+        if (isFreeMode(context)) {
             return false
         }
         val needed = winsNeeded(context)
@@ -136,9 +138,29 @@ object CoinStore {
             .apply()
     }
 
+    // "Salvar" na janelinha: começa um jogo novo (placar, sequência e último resultado
+    // zerados), mas mantém modo, pergunta e textos. O widget fica esperando o giro.
+    fun startNewGame(context: Context) {
+        resetScores(context)
+        prefs(context).edit().remove("side").apply()
+    }
+
     // "Zerar tudo": apaga TUDO (placar, pergunta, textos, modo). Volta a ser só cara ou coroa.
+    // (a escolha de vibrar fica: é uma preferência do usuário, não parte do jogo)
     fun resetAll(context: Context) {
-        prefs(context).edit().clear().apply()
+        val vibration = isVibrationOn(context)
+        prefs(context).edit().clear().putBoolean("vibrate", vibration).apply()
+    }
+
+    // ----- Vibração -----
+
+    // Ligada por padrão
+    fun isVibrationOn(context: Context): Boolean {
+        return prefs(context).getBoolean("vibrate", true)
+    }
+
+    fun saveVibration(context: Context, on: Boolean) {
+        prefs(context).edit().putBoolean("vibrate", on).apply()
     }
 
     // ----- Pergunta e textos de cada lado -----
@@ -178,13 +200,10 @@ fun boardTexts(context: Context): List<String> {
     // Modo "1 vez": sem placar. Mostra a pergunta e, se o usuário digitou os textos,
     // o texto do lado que saiu (a moeda já mostra CARA ou COROA).
     if (CoinStore.isSingleMode(context)) {
-        return listOf(
-            CoinStore.getQuestion(context),
-            "",
-            CoinStore.getLabel(context, CoinStore.lastSide(context)),
-            "",
-            ""
-        )
+        // Só mostra o texto do lado depois do giro (some quando o usuário joga novamente)
+        val played = CoinStore.getScore(context, HEADS) + CoinStore.getScore(context, TAILS) > 0
+        val label = if (played) CoinStore.getLabel(context, CoinStore.lastSide(context)) else ""
+        return listOf(CoinStore.getQuestion(context), "", label, "", "")
     }
 
     val headsScore = CoinStore.getScore(context, HEADS)
@@ -202,9 +221,10 @@ fun boardTexts(context: Context): List<String> {
 
     return listOf(
         CoinStore.getQuestion(context),
-        "● " + sideLabel(context, HEADS),
-        "$headsScore x $tailsScore",
-        sideLabel(context, TAILS) + " ○",
+        sideLabel(context, HEADS),
+        // No meio, duas linhas: as bolinhas (● cara, ○ coroa) em cima dos números do placar
+        "●   ○\n$headsScore x $tailsScore",
+        sideLabel(context, TAILS),
         dots.joinToString(" ")
     )
 }
@@ -212,6 +232,27 @@ fun boardTexts(context: Context): List<String> {
 // Os 5 textos antes do primeiro giro: só uma mensagem na primeira linha
 fun startBoard(text: String): List<String> {
     return listOf(text, "", "", "", "")
+}
+
+// Os 5 textos quando o jogo está pronto, esperando o giro: se o usuário digitou uma
+// pergunta, ela aparece em cima e o convite ("Toque para girar") na última linha
+fun readyBoard(context: Context, hint: String): List<String> {
+    val question = CoinStore.getQuestion(context)
+    if (question.isEmpty()) {
+        return startBoard(hint)
+    }
+    return listOf(question, "", "", "", hint)
+}
+
+// ----- Vibração (o usuário pode desligar no app) -----
+
+// Vibra por alguns milissegundos, se o usuário não tiver desligado a vibração
+fun vibrate(context: Context, millis: Long) {
+    if (!CoinStore.isVibrationOn(context)) {
+        return
+    }
+    val vibrator = context.getSystemService(Vibrator::class.java) ?: return
+    vibrator.vibrate(VibrationEffect.createOneShot(millis, VibrationEffect.DEFAULT_AMPLITUDE))
 }
 
 // ----- Opções de modo (1 vez / Livre / Melhor de 5 / Melhor de 7) -----
@@ -243,15 +284,21 @@ fun readSeriesSize(group: RadioGroup): Int {
 
 // Pergunta "Zerar tudo?". Se o usuário confirmar, apaga tudo, atualiza o widget
 // e executa o que foi pedido em afterReset (por exemplo, limpar os campos da tela).
-fun askResetAll(activity: AppCompatActivity, afterReset: () -> Unit) {
+// afterClose (opcional) roda quando a caixa fecha, seja qual for a resposta.
+fun askResetAll(
+    activity: AppCompatActivity,
+    afterReset: () -> Unit,
+    afterClose: () -> Unit = {}
+) {
     AlertDialog.Builder(activity)
         .setTitle("Zerar tudo?")
-        .setMessage("Apaga o placar, a pergunta e os textos de cara e coroa, e volta a girar só 1 vez.")
+        .setMessage("Apaga o placar, a pergunta e os textos de cara e coroa, e volta ao modo \"Cara ou Coroa?\".")
         .setPositiveButton("Zerar") { _, _ ->
             CoinStore.resetAll(activity)
             CoinWidgetProvider.updateAll(activity)
             afterReset()
         }
         .setNegativeButton("Cancelar", null)
+        .setOnDismissListener { afterClose() }
         .show()
 }

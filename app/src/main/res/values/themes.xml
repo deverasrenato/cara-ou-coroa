@@ -5,6 +5,14 @@
         <item name="colorAccent">@color/accent</item>
     </style>
 
+    <!-- Tema transparente: a tela some e só a caixa "Zerar tudo?" aparece por cima da tela inicial -->
+    <style name="Theme.CaraOuCoroa.Transparent" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <item name="colorAccent">@color/accent</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
     <!-- Tema da janelinha que abre por cima da tela inicial -->
     <style name="Theme.CaraOuCoroa.Dialog" parent="Theme.AppCompat.DayNight.Dialog">
         <item name="colorPrimary">@color/accent</item>

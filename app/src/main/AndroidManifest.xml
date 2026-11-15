@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <!-- Vibrar quando a moeda para (o usuário pode desligar no app). Não pede autorização. -->
+    <uses-permission android:name="android.permission.VIBRATE" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
@@ -26,6 +29,14 @@
             android:taskAffinity=""
             android:theme="@style/Theme.CaraOuCoroa.Dialog"
             android:windowSoftInputMode="stateHidden|adjustResize" />
+
+        <!-- Caixa "Zerar tudo?" aberta pelo botão do widget (tela transparente) -->
+        <activity
+            android:name=".ConfirmResetActivity"
+            android:excludeFromRecents="true"
+            android:exported="false"
+            android:taskAffinity=""
+            android:theme="@style/Theme.CaraOuCoroa.Transparent" />
 
         <!-- O widget da tela inicial -->
         <receiver

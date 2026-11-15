@@ -32,12 +32,6 @@
                 android:text="@string/series_1" />
 
             <RadioButton
-                android:id="@+id/series_free"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/series_free" />
-
-            <RadioButton
                 android:id="@+id/series_5"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -49,18 +43,41 @@
                 android:layout_height="wrap_content"
                 android:text="@string/series_7" />
 
+            <RadioButton
+                android:id="@+id/series_free"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/series_free" />
+
         </RadioGroup>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="@string/field_question"
+            android:textColor="#FFC83D"
+            android:textSize="14sp"
+            android:textStyle="bold" />
 
         <EditText
             android:id="@+id/quick_question_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
             android:hint="@string/question_hint"
             android:imeOptions="actionNext"
             android:inputType="text"
-            android:maxLength="30"
+            android:maxLength="40"
             android:maxLines="1" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/field_heads"
+            android:textColor="#FFC83D"
+            android:textSize="14sp"
+            android:textStyle="bold" />
 
         <EditText
             android:id="@+id/quick_heads_input"
@@ -69,8 +86,17 @@
             android:hint="@string/heads_hint"
             android:imeOptions="actionNext"
             android:inputType="text"
-            android:maxLength="12"
+            android:maxLength="20"
             android:maxLines="1" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/field_tails"
+            android:textColor="#FFC83D"
+            android:textSize="14sp"
+            android:textStyle="bold" />
 
         <EditText
             android:id="@+id/quick_tails_input"
@@ -79,8 +105,18 @@
             android:hint="@string/tails_hint"
             android:imeOptions="actionDone"
             android:inputType="text"
-            android:maxLength="12"
+            android:maxLength="20"
             android:maxLines="1" />
+
+        <!-- Aviso: salvar começa um jogo novo -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:gravity="center"
+            android:text="@string/save_notice"
+            android:textColor="#AEB8D0"
+            android:textSize="13sp" />
 
         <Button
             android:id="@+id/quick_flip_button"
@@ -91,10 +127,13 @@
 
         <Button
             android:id="@+id/quick_reset_button"
-            style="?android:attr/borderlessButtonStyle"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/reset_all" />
+            android:layout_height="52dp"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/reset_button_background"
+            android:text="@string/reset_all"
+            android:textColor="#FF8A80"
+            android:textStyle="bold" />
 
     </LinearLayout>
 

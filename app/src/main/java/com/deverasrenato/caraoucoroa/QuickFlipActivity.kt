@@ -1,6 +1,5 @@
 package com.deverasrenato.caraoucoroa
 
-import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
@@ -9,7 +8,8 @@ import androidx.appcompat.app.AppCompatActivity
 
 // A "janelinha" que abre por cima da tela inicial quando o usuário toca no lápis do widget.
 // Nela ele escolhe o modo (livre, melhor de 5 ou de 7), digita a pergunta (opcional) e
-// o que cada lado significa, e manda girar. Também pode zerar tudo.
+// o que cada lado significa, e salva. O widget volta zerado, esperando o toque na moeda.
+// Também pode zerar tudo.
 class QuickFlipActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,15 +35,9 @@ class QuickFlipActivity : AppCompatActivity() {
             CoinStore.saveLabel(this, HEADS, headsInput.text.toString())
             CoinStore.saveLabel(this, TAILS, tailsInput.text.toString())
 
-            // Apertar "Girar" aqui começa uma série nova, se a anterior já tinha um vencedor
-            if (CoinStore.isSeriesFinished(this)) {
-                CoinStore.resetScores(this)
-            }
-
-            // Pede para o widget girar a moeda (a animação acontece nele)
-            val intent = Intent(this, CoinWidgetProvider::class.java)
-            intent.action = CoinWidgetProvider.ACTION_FLIP
-            sendBroadcast(intent)
+            // Salvar começa um jogo novo: o widget volta zerado e espera o toque na moeda
+            CoinStore.startNewGame(this)
+            CoinWidgetProvider.updateAll(this)
 
             // Fecha a janelinha e volta para a tela inicial
             finish()
@@ -51,9 +45,7 @@ class QuickFlipActivity : AppCompatActivity() {
 
         // Zerar tudo: pergunta antes de apagar. Depois de apagar, fecha a janelinha.
         resetButton.setOnClickListener {
-            askResetAll(this) {
-                finish()
-            }
+            askResetAll(this, afterReset = { finish() })
         }
     }
 }

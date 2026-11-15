@@ -8,13 +8,15 @@ Plano pensado para quem está no **2º período de ADS**: poucas coisas por vez,
 - Tela do app com botão "Girar moeda" (`MainActivity.kt`).
 - Widget (padrão 3x3) que gira ao toque (`CoinWidgetProvider.kt`).
 - Estado do jogo guardado no aparelho e compartilhado entre o app e o widget (`CoinStore.kt`).
-- Girar só 1 vez (padrão), modo livre, melhor de 5/7, vencedor grande, "Jogar novamente?" e "Zerar tudo" (D06, D08, D09).
+- Modos "Cara ou Coroa?" (padrão), melhor de 5/7 e livre, vencedor grande, "Jogar novamente?" e "Zerar tudo" (D06, D08, D09, D12).
+- Janelinha com "Salvar", vibração com opção de desligar e número da versão (D11, D12).
 - No app, deslizar para cima na moeda também gira (D07).
 
 **Ainda não existe:**
 - Teste em celular de verdade (no emulador já funciona).
 - Repositório no GitHub.
-- Ícone final, visual final do widget, vibração e som.
+- Ícone final, visual final do widget e som.
+- Testes em mais celulares (o do usuário é um Galaxy S23 com letra pequena; o emulador se comportou melhor).
 
 ## 2. O app, em uma frase
 Um cara ou coroa para Android em que o usuário gira a moeda, com animação, direto de um widget na tela inicial, sem abrir o app.
@@ -47,19 +49,19 @@ Cortar cedo é o que garante que o MVP fique pronto.
 
 ### Etapa 2.5 — Decisões rápidas (textos e pergunta)
 - Textos de cara e coroa, pergunta opcional e o lápis do widget com a janelinha.
-- **Pronto quando:** pelo widget, o usuário digita "Pedir delivery?" com cara = "Sim" e coroa = "Não", toca em "Girar" e vê o resultado com esses textos.
+- **Pronto quando:** pelo widget, o usuário digita "Pedir delivery?" com cara = "Sim" e coroa = "Não", toca em "Salvar" e depois na moeda, e vê o resultado com esses textos.
 - **Você aprende:** `EditText` (campo de texto), mais de uma tela (`Activity`), tema de diálogo, `SharedPreferences` com texto.
 - **Situação:** código pronto e compilando; falta o usuário testar.
 
-### Etapa 2.6 — Modos de jogo (1 vez, livre, melhor de 5 e 7)
-- Opções 1 vez / Livre / melhor de 5 / melhor de 7 (marcar), linhas fixas e centralizadas abaixo da moeda (pergunta, placar em 3 colunas, sequência ●/○).
+### Etapa 2.6 — Modos de jogo (Cara ou Coroa?, melhor de 5 e 7, livre)
+- Opções Cara ou Coroa? / melhor de 5 / melhor de 7 / Livre (marcar), linhas fixas e centralizadas abaixo da moeda (pergunta, placar em 3 colunas, sequência ●/○).
 - **Pronto quando:** no modo livre o placar conta sem fim; em "melhor de 5", cada toque gira uma vez, o texto não pula e ao chegar a 3 vitórias o vencedor aparece grande sobre a moeda.
 - **Você aprende:** `RadioGroup` (opções de marcar), `SharedPreferences` com mais de um dado, estado que dura mais de um toque.
 - **Situação:** código pronto, compilando e conferido visualmente no emulador (D06); falta o usuário testar.
 
 ### Etapa 2.7 — Vencedor, jogar novamente e zerar
-- Camada do vencedor sobre a moeda, botão "Jogar novamente?", "Zerar tudo" com confirmação e limites de texto (12 e 30).
-- **Pronto quando:** ao ganhar a série a moeda não gira mais até tocar em "Jogar novamente?"; "Zerar tudo" volta ao modo "1 vez" sem pergunta nem textos.
+- Camada do vencedor sobre a moeda, botão "Jogar novamente?", "Zerar tudo" com confirmação e limites de texto (20 e 40).
+- **Pronto quando:** ao ganhar a série a moeda não gira mais até tocar em "Jogar novamente?"; "Zerar tudo" volta ao modo "Cara ou Coroa?" sem pergunta nem textos.
 - **Você aprende:** sobrepor telas (`FrameLayout`), `AlertDialog` de confirmação, `autoSize` do texto.
 - **Situação:** código pronto e compilando; ainda não testados por toque: "Jogar novamente?" e "Zerar tudo". Falta testar no celular de verdade.
 

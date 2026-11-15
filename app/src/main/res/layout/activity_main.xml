@@ -46,6 +46,7 @@
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/winner_suffix"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
@@ -68,6 +69,18 @@
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
+                <!-- Botão pequeno: pede confirmação e apaga tudo -->
+                <TextView
+                    android:id="@+id/winner_reset_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:padding="10dp"
+                    android:text="@string/reset_all"
+                    android:textColor="#FF8A80"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
             </LinearLayout>
 
         </FrameLayout>
@@ -76,68 +89,71 @@
         <!-- Linha 1: a pergunta -->
         <TextView
             android:id="@+id/line_1"
-            android:autoSizeMaxTextSize="18sp"
-            android:autoSizeMinTextSize="8sp"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:autoSizeMaxTextSize="24sp"
+            android:autoSizeMinTextSize="12sp"
             android:autoSizeStepGranularity="1sp"
             android:autoSizeTextType="uniform"
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
             android:ellipsize="end"
             android:gravity="center"
             android:maxLines="1"
             android:textColor="@color/text"
-            android:textSize="18sp"
+            android:textSize="24sp"
             android:textStyle="bold" />
 
         <!-- Placar em 3 colunas: os dois lados têm a mesma largura (peso 1),
-             então o "2 x 1" do meio fica SEMPRE no centro -->
+             então o "2 x 1" do meio fica SEMPRE no centro.
+             Cada lado pode usar até 2 linhas, e a letra diminui sozinha só se precisar. -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="30dp"
+            android:layout_height="72dp"
             android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/score_left"
-            android:autoSizeMaxTextSize="18sp"
-            android:autoSizeMinTextSize="8sp"
-            android:autoSizeStepGranularity="1sp"
-            android:autoSizeTextType="uniform"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:autoSizeMaxTextSize="24sp"
+                android:autoSizeMinTextSize="12sp"
+                android:autoSizeStepGranularity="1sp"
+                android:autoSizeTextType="uniform"
                 android:ellipsize="end"
-                android:gravity="center_vertical|end"
-                android:maxLines="1"
+                android:gravity="bottom|end"
+                android:maxLines="2"
+                android:textAlignment="viewEnd"
                 android:textColor="@color/text"
-                android:textSize="18sp"
+                android:textSize="24sp"
                 android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/score_center"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:gravity="center"
-                android:maxLines="1"
-                android:paddingStart="12dp"
-                android:paddingEnd="12dp"
+                android:gravity="center_horizontal|bottom"
+                android:maxLines="2"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
                 android:textColor="@color/accent"
-                android:textSize="20sp"
+                android:textSize="22sp"
                 android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/score_right"
-            android:autoSizeMaxTextSize="18sp"
-            android:autoSizeMinTextSize="8sp"
-            android:autoSizeStepGranularity="1sp"
-            android:autoSizeTextType="uniform"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:autoSizeMaxTextSize="24sp"
+                android:autoSizeMinTextSize="12sp"
+                android:autoSizeStepGranularity="1sp"
+                android:autoSizeTextType="uniform"
                 android:ellipsize="end"
-                android:gravity="center_vertical|start"
-                android:maxLines="1"
+                android:gravity="bottom|start"
+                android:maxLines="2"
+                android:textAlignment="viewStart"
                 android:textColor="@color/text"
-                android:textSize="18sp"
+                android:textSize="24sp"
                 android:textStyle="bold" />
 
         </LinearLayout>
@@ -145,17 +161,18 @@
         <!-- Linha 3: o que saiu em cada giro -->
         <TextView
             android:id="@+id/line_3"
-            android:autoSizeMaxTextSize="16sp"
-            android:autoSizeMinTextSize="8sp"
+            android:layout_width="match_parent"
+            android:layout_height="32dp"
+            android:autoSizeMaxTextSize="20sp"
+            android:autoSizeMinTextSize="12sp"
             android:autoSizeStepGranularity="1sp"
             android:autoSizeTextType="uniform"
-            android:layout_width="match_parent"
-            android:layout_height="28dp"
             android:ellipsize="end"
             android:gravity="center"
             android:maxLines="1"
-            android:textColor="@color/text_soft"
-            android:textSize="16sp" />
+            android:textColor="@color/accent"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
         <Button
             android:id="@+id/flip_button"
@@ -188,13 +205,6 @@
                 android:textColor="@color/text" />
 
             <RadioButton
-                android:id="@+id/series_free"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/series_free"
-                android:textColor="@color/text" />
-
-            <RadioButton
                 android:id="@+id/series_5"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -208,17 +218,33 @@
                 android:text="@string/series_7"
                 android:textColor="@color/text" />
 
+            <RadioButton
+                android:id="@+id/series_free"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/series_free"
+                android:textColor="@color/text" />
+
         </RadioGroup>
+
+        <!-- Rótulo fixo: continua visível depois que o usuário digita -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/field_question"
+            android:textColor="@color/accent"
+            android:textSize="14sp"
+            android:textStyle="bold" />
 
         <EditText
             android:id="@+id/question_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
             android:hint="@string/question_hint"
             android:imeOptions="actionNext"
             android:inputType="text"
-            android:maxLength="30"
+            android:maxLength="40"
             android:maxLines="1"
             android:textColor="@color/text"
             android:textColorHint="@color/text_soft" />
@@ -232,40 +258,67 @@
             android:textSize="16sp"
             android:textStyle="bold" />
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/field_heads"
+            android:textColor="@color/accent"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
         <EditText
             android:id="@+id/heads_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
             android:hint="@string/heads_hint"
             android:imeOptions="actionNext"
             android:inputType="text"
-            android:maxLength="12"
+            android:maxLength="20"
             android:maxLines="1"
             android:textColor="@color/text"
             android:textColorHint="@color/text_soft" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/field_tails"
+            android:textColor="@color/accent"
+            android:textSize="14sp"
+            android:textStyle="bold" />
 
         <EditText
             android:id="@+id/tails_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
             android:hint="@string/tails_hint"
             android:imeOptions="actionDone"
             android:inputType="text"
-            android:maxLength="12"
+            android:maxLength="20"
             android:maxLines="1"
             android:textColor="@color/text"
             android:textColorHint="@color/text_soft" />
 
-        <Button
-            android:id="@+id/reset_button"
-            style="?android:attr/borderlessButtonStyle"
+        <CheckBox
+            android:id="@+id/vibration_check"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
+            android:text="@string/vibration"
+            android:textColor="@color/text" />
+
+        <!-- "Zerar tudo" em destaque: botão largo, com contorno vermelho claro -->
+        <Button
+            android:id="@+id/reset_button"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginTop="24dp"
+            android:background="@drawable/reset_button_background"
             android:text="@string/reset_all"
-            android:textColor="@color/text_soft" />
+            android:textColor="#FF8A80"
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -275,6 +328,15 @@
             android:text="@string/widget_tip"
             android:textColor="@color/text_soft"
             android:textSize="14sp" />
+
+        <!-- Versão do app -->
+        <TextView
+            android:id="@+id/version_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:textColor="@color/text_soft"
+            android:textSize="12sp" />
 
     </LinearLayout>
 

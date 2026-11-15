@@ -9,6 +9,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.animation.LinearInterpolator
 import android.widget.Button
+import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.RadioGroup
@@ -32,6 +33,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var winnerLayer: View
     private lateinit var winnerName: TextView
     private lateinit var replayButton: TextView
+    private lateinit var vibrationCheck: CheckBox
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,6 +49,16 @@ class MainActivity : AppCompatActivity() {
         winnerLayer = findViewById(R.id.winner_layer)
         winnerName = findViewById(R.id.winner_name)
         replayButton = findViewById(R.id.replay_button)
+        vibrationCheck = findViewById(R.id.vibration_check)
+
+        // Mostra a versão do app (vem do build.gradle.kts, em versionName)
+        val versionName = packageManager.getPackageInfo(packageName, 0).versionName
+        findViewById<TextView>(R.id.version_text).text = getString(R.string.version_label, versionName)
+
+        // Guarda na hora a escolha de vibrar ou não
+        vibrationCheck.setOnCheckedChangeListener { _, checked ->
+            CoinStore.saveVibration(this, checked)
+        }
 
         flipButton.setOnClickListener { flip() }
 
@@ -78,12 +90,20 @@ class MainActivity : AppCompatActivity() {
         }
         replayButton.setOnClickListener { replay() }
 
-        // Zerar tudo: pergunta antes de apagar. Depois, limpa os campos da tela.
-        resetButton.setOnClickListener {
-            askResetAll(this) {
+        // Botão pequeno "Zerar tudo" na camada do vencedor (com a mesma confirmação)
+        findViewById<TextView>(R.id.winner_reset_button).setOnClickListener {
+            askResetAll(this, afterReset = {
                 loadInputs()
                 showStillCoin()
-            }
+            })
+        }
+
+        // Zerar tudo: pergunta antes de apagar. Depois, limpa os campos da tela.
+        resetButton.setOnClickListener {
+            askResetAll(this, afterReset = {
+                loadInputs()
+                showStillCoin()
+            })
         }
     }
 
@@ -115,6 +135,7 @@ class MainActivity : AppCompatActivity() {
     // Coloca nos campos da tela o que está guardado
     private fun loadInputs() {
         showSeriesSize(seriesGroup, CoinStore.getSeriesSize(this))
+        vibrationCheck.isChecked = CoinStore.isVibrationOn(this)
         questionInput.setText(CoinStore.getQuestion(this))
         headsInput.setText(CoinStore.getLabel(this, HEADS))
         tailsInput.setText(CoinStore.getLabel(this, TAILS))
@@ -133,7 +154,7 @@ class MainActivity : AppCompatActivity() {
         val texts = if (CoinStore.hasResult(this)) {
             boardTexts(this)
         } else {
-            startBoard("Toque na moeda")
+            readyBoard(this, "Toque na moeda")
         }
         for (i in 0..4) {
             findViewById<TextView>(BOARD_IDS[i]).text = texts[i]
@@ -144,6 +165,9 @@ class MainActivity : AppCompatActivity() {
     private fun showWinner(show: Boolean) {
         if (show) {
             winnerName.text = sideLabel(this, CoinStore.winnerSide(this))
+            // No modo "Cara ou Coroa?" (1 giro) não faz sentido escrever "venceu!"
+            findViewById<View>(R.id.winner_suffix).visibility =
+                if (CoinStore.isSingleMode(this)) View.GONE else View.VISIBLE
             winnerLayer.visibility = View.VISIBLE
         } else {
             winnerLayer.visibility = View.GONE
@@ -188,6 +212,7 @@ class MainActivity : AppCompatActivity() {
         animator.addListener(object : AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator) {
                 CoinStore.saveResult(this@MainActivity, result)
+                vibrate(this@MainActivity, 40) // toquinho quando a moeda para
                 showBoard()
                 flipButton.isEnabled = true
                 // Deixa o widget igual ao app
@@ -195,7 +220,10 @@ class MainActivity : AppCompatActivity() {
 
                 // Se a série terminou, espera um instante (para ver a moeda) e mostra o vencedor
                 if (CoinStore.isSeriesFinished(this@MainActivity)) {
-                    coinImage.postDelayed({ showWinner(true) }, Coin.WINNER_DELAY_MS)
+                    coinImage.postDelayed({
+                        showWinner(true)
+                        vibrate(this@MainActivity, 150) // vibração mais longa para o vencedor
+                    }, Coin.WINNER_DELAY_MS)
                 }
             }
         })

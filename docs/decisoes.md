@@ -89,6 +89,38 @@ Este arquivo registra **o que foi decidido, por quê, e o que foi descartado**. 
 - **Alternativas descartadas:** manter o livre como padrão.
 - **Consequências:** o valor guardado `series_size` passa a ter 1 (padrão), 0 (livre), 5 e 7.
 
+### D10 — Letras maiores, limites maiores e "Zerar tudo" em destaque
+- **Data:** 15/11/2026 · **Status:** Vigente (muda os limites da D06: 12 e 30 viram 20 e 40)
+- **Contexto:** o usuário testou em um celular de verdade e achou as letras do texto abaixo da moeda pequenas, os 12 caracteres pouco e o "Zerar tudo" discreto demais.
+- **Decisão:** letras do texto da moeda maiores (widget até 16 sp, app até 24 sp), com a letra diminuindo sozinha só quando precisa; cada lado do placar pode usar até 2 linhas; limites de 20 caracteres para cara e coroa e 40 para a pergunta; "Zerar tudo" vira um botão largo com contorno vermelho claro, no app e na janelinha.
+- **Fundamento:** com mais espaço por linha, textos maiores continuam centralizados; a cor chama atenção para uma ação que apaga dados (a confirmação continua).
+- **Alternativas descartadas:** manter 1 linha por lado e só aumentar a letra (cortaria textos longos); pôr "Zerar tudo" no widget (risco de toque acidental).
+- **Consequências:** o texto ocupa mais altura, então a moeda fica um pouco menor no widget; aumentar o widget na vertical devolve o espaço.
+
+### D11 — "Salvar" na janelinha, vibração e versão do app
+- **Data:** 15/11/2026 · **Status:** Vigente (muda a D04: a janelinha não gira mais, só salva)
+- **Contexto:** o usuário testou no celular dele e quis separar "configurar" de "jogar", ter vibração com opção de desligar, e ver a versão do app. Também pediu que o widget não gaste bateria em segundo plano.
+- **Decisão:** o botão da janelinha vira **Salvar**: guarda modo, pergunta e textos, zera placar, sequência e último resultado, e o widget fica em "Toque para girar" mostrando a pergunta. A janelinha avisa que o jogo atual será zerado. A moeda vibra 40 ms ao parar e 150 ms no vencedor; a opção "Vibrar quando a moeda parar" fica no app, ligada por padrão, e "Zerar tudo" não a desliga. A versão (`versionName` 0.2.0) aparece no fim da tela do app.
+- **Fundamento:** o novo jogo começa limpo e o usuário decide quando girar. A vibração só pede a permissão VIBRATE, que o Android concede sem perguntar. Nada roda em segundo plano: `updatePeriodMillis` é 0 e não há serviço nem alarme, então o widget só trabalha por cerca de 1,3 segundo quando o usuário toca.
+- **Alternativas descartadas:** dois botões (salvar e salvar-e-girar); confirmação ao trocar de modo no app (só valeria se afetasse o desempenho); atualizar o widget de tempos em tempos (gastaria bateria).
+- **Consequências:** o fluxo pelo lápis ficou com 3 passos (lápis, digitar e salvar, tocar na moeda). A permissão do app deixou de ser "nenhuma". Há um histórico de versões em `docs/versoes.md`.
+
+### D12 — Modo "Cara ou Coroa?", ordem das opções e rótulos dos campos
+- **Data:** 15/11/2026 · **Status:** Vigente (muda a D09)
+- **Contexto:** o usuário quis um nome melhor para o modo de um giro, o modo livre por último, o mesmo "Jogar novamente?" depois de um giro, e rótulos que não sumissem ao digitar.
+- **Decisão:** as opções são **Cara ou Coroa?** (padrão), **Melhor de 5**, **Melhor de 7** e **Livre (sem fim)**. No modo de um giro, o resultado aparece grande sobre a moeda (sem "venceu!") com "Jogar novamente?". Os campos ganharam rótulos fixos "Pergunta", "Cara" e "Coroa". O placar ficou com ●/○ em cima dos números e os nomes alinhados pela linha dos números; a linha da sequência ficou amarela e em negrito.
+- **Fundamento:** o modo de um giro é uma série de 1 vitória, então reaproveita toda a lógica das séries. Rótulos fixos continuam visíveis depois de digitar (a dica do campo some).
+- **Alternativas descartadas:** manter "venceu!" no modo de um giro (ficaria "CARA venceu!"); usar só as dicas dos campos.
+- **Consequências:** nenhuma mudança nos dados guardados (`series_size` continua 1, 0, 5 ou 7).
+
+### D13 — "Zerar tudo" na tela do vencedor
+- **Data:** 15/11/2026 · **Status:** Vigente (muda a D10, que descartou o botão no widget por risco de toque acidental)
+- **Contexto:** quando a série termina, o usuário decide entre jogar de novo ou começar outra coisa.
+- **Decisão:** abaixo do "Jogar novamente?" há um botão pequeno "Zerar tudo" em vermelho claro, no app e no widget. Nos dois abre a confirmação "Zerar tudo?". No widget, o botão abre a `ConfirmResetActivity`, uma tela transparente que só mostra a caixa de confirmação.
+- **Fundamento:** o botão fica pequeno e discreto, e a confirmação evita apagar por engano. O toque natural continua sendo o "Jogar novamente?", em amarelo.
+- **Alternativas descartadas:** botão sem confirmação no widget; deixar o widget só com o lápis (um toque a mais).
+- **Consequências:** uma tela nova (`ConfirmResetActivity`) e um tema transparente. A função `askResetAll` ganhou o parâmetro `afterClose`.
+
 ---
 
 ## Histórico (linha do tempo)
@@ -105,6 +137,9 @@ Este arquivo registra **o que foi decidido, por quê, e o que foi descartado**. 
 | 15/11/2026 | Removido o texto "Deu CARA!/COROA!" (a moeda já mostra o lado). Adicionada a série "melhor de N" com placar e vencedor (D05). Compila; a série ainda não foi testada pelo usuário. |
 | 15/11/2026 | Corrigida a janelinha do lápis: opções 1/5/7 empilhadas (a 7 ficava cortada), janelinha com 90% da largura e sem barra de título repetida, conteúdo rolável e teclado só abre ao tocar em um campo. |
 | 15/11/2026 | Revisão da série (D05): opções fixas 1 / 5 / 7, texto fixo em 4 linhas abaixo da moeda, sequência do que saiu em cada giro, widget padrão 3x3. Compila; ainda não testado. |
+| 15/11/2026 | D13: botão pequeno "Zerar tudo" abaixo do "Jogar novamente?", no app e no widget, com confirmação. Compila e instalado no emulador; não testado. |
+| 15/11/2026 | D11 e D12: "Salvar" na janelinha, vibração com opção de desligar, versão 0.2.0 no app, modo "Cara ou Coroa?", nova ordem das opções e rótulos fixos nos campos. Compila e instalado no emulador; ainda não testado no celular. |
+| 15/11/2026 | Teste no celular de verdade: tudo funcionou. D10: letras maiores, limites 20 e 40 e "Zerar tudo" em destaque. Compila; ainda não testado no celular. |
 | 15/11/2026 | D08 e D09: o modo livre zera quando o app sai da tela, e entra a opção "Girar só 1 vez" como padrão. Compila e instalado no emulador; não testado. |
 | 15/11/2026 | D07: no app, deslizar para cima na moeda também gira (widget só toque). Compila; não testado. |
 | 15/11/2026 | D06: modo livre, vencedor grande com "Jogar novamente?", "Zerar tudo", placar centralizado em 3 colunas e limites de texto (12 e 30). Compila e foi conferido visualmente no emulador; o usuário ainda não testou e falta o celular de verdade. |
