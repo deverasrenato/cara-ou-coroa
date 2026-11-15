@@ -1,12 +1,41 @@
-# Moedinha
+<div align="center">
 
-**Gire a moeda direto da tela inicial.**
+# 🪙 Moedinha
 
+**Cara ou coroa na ponta do dedo. Gire a moeda direto da tela inicial.**
+
+[![Testar a demonstração](https://img.shields.io/badge/▶_Testar_o_app-online-FFC83D?style=for-the-badge&labelColor=0B1030)](https://deverasrenato.github.io/cara-ou-coroa/)
+
+![Android](https://img.shields.io/badge/Android-Kotlin-3DDC84?logo=android&logoColor=white)
+![Versão](https://img.shields.io/badge/vers%C3%A3o-0.5.0-FFC83D)
+![Status](https://img.shields.io/badge/status-MVP_em_desenvolvimento-blue)
+
+<img src="docs/img/app.png" alt="Tela principal do app Moedinha" width="230"> &nbsp; <img src="docs/img/widget.png" alt="Widget da Moedinha na tela inicial" width="230"> &nbsp; <img src="docs/img/vencedor.png" alt="Vencedor da melhor de 5" width="230">
+
+</div>
+
+## 👉 Teste agora, sem instalar nada
+**[https://deverasrenato.github.io/cara-ou-coroa/](https://deverasrenato.github.io/cara-ou-coroa/)**
+
+Abre uma simulação clicável no navegador, com dois celulares lado a lado: toque no ícone da **Moedinha** para abrir o app e toque na moeda do **widget** para girar sem abrir o app. (É uma recriação em página web; o app de verdade é nativo para Android.)
+
+## Sobre o app
 App de cara ou coroa para Android, chamado **Moedinha** (a pasta e o repositório continuam `cara-ou-coroa`). O diferencial é o widget: o usuário toca nele, a moeda gira com animação e o resultado aparece, sem precisar abrir o app.
 
 Projeto acadêmico de Análise e Desenvolvimento de Sistemas (ADS), desenvolvido em Kotlin com o Android Studio. Somente Android.
 
 > **Status:** em desenvolvimento (MVP), versão **0.5.0**. O app compila, gera o APK de teste e funciona no emulador e em um celular de verdade (o visual novo ainda está sendo conferido). Veja o [Roadmap](#roadmap).
+
+## Telas
+<div align="center">
+
+| Abertura | Boas-vindas | Janelinha do lápis |
+|:---:|:---:|:---:|
+| <img src="docs/img/abertura.png" alt="Abertura com a moeda girando" width="220"> | <img src="docs/img/boas-vindas.png" alt="Boas-vindas do widget" width="220"> | <img src="docs/img/janelinha.png" alt="Janelinha do lápis do widget" width="220"> |
+
+<sub>Capturas do emulador Android, versão 0.4.0 (a 0.5.0 acrescenta "Meus layouts").</sub>
+
+</div>
 
 ## Como o app funciona
 1. O usuário abre o app e toca na moeda (ou no botão "Girar moeda"): a moeda gira e mostra CARA (silhueta de uma pessoa) ou COROA (uma coroa), em relevo.
@@ -35,7 +64,7 @@ Sim     2 x 1     Não
 10. A moeda vibra quando para (dá para desligar no app). Limites de texto: 20 letras para cara e coroa, 40 para a pergunta. O app e o widget guardam o mesmo estado e mostram sempre o mesmo.
 
 ## Demonstração online
-Uma simulação clicável do app roda em uma página web (pasta `docs/demo`), para quem não tem Android ver como funciona. Aparecem dois celulares lado a lado: a tela inicial com o widget e o app, que abre ao tocar no ícone da Moedinha. Dá para ver: abertura, boas-vindas, os 3 modos, placar, vencedor, widget, janelinha do lápis e "Meus layouts" (salvar, escolher e apagar). Depois de ativar o GitHub Pages (Settings, Pages, fonte `main`, pasta `/docs`), o endereço é `https://deverasrenato.github.io/cara-ou-coroa/demo/`. É uma recriação em JavaScript, não o app de verdade.
+Uma simulação clicável do app roda em uma página web (pasta `docs/demo`), para quem não tem Android ver como funciona. Aparecem dois celulares lado a lado: a tela inicial com o widget e o app, que abre ao tocar no ícone da Moedinha. Dá para ver: abertura, boas-vindas, os 3 modos, placar, vencedor, widget, janelinha do lápis e "Meus layouts" (salvar, escolher e apagar). O endereço é [deverasrenato.github.io/cara-ou-coroa](https://deverasrenato.github.io/cara-ou-coroa/) (GitHub Pages, fonte `main`, pasta `/docs`). É uma recriação em JavaScript, não o app de verdade.
 
 ## Tecnologias
 - [Kotlin](https://kotlinlang.org) e o [Android Studio](https://developer.android.com/studio)
