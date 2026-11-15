@@ -22,7 +22,7 @@ Versão 0.1 · Projeto acadêmico de ADS
 | **Deveria** | App e widget mostram o mesmo último resultado |
 | **Deveria** | Textos personalizados para cara e coroa (ex.: "Pedir delivery" e "Cozinhar em casa"), mostrados no resultado |
 | **Deveria** | Pergunta opcional, digitada em uma janelinha aberta pelo lápis do widget, mostrada no resultado |
-| **Deveria** | Girar só 1 vez (padrão), modo livre (conta cara e coroa sem fim) e séries "melhor de 5" e "melhor de 7", com placar |
+| **Deveria** | Girar só 1 vez (padrão), modo livre (conta cara e coroa sem fim) e série "melhor de 5", com placar |
 | **Deveria** | Vencedor grande sobre a moeda, com "Jogar novamente?" |
 | **Deveria** | Botão "Zerar tudo" |
 | **Deveria** | Vibração ao parar a moeda, com opção de desligar |
@@ -43,7 +43,7 @@ Versão 0.1 · Projeto acadêmico de ADS
 | RF09 | O usuário pode digitar uma pergunta opcional (até **40** caracteres). Ela aparece logo abaixo da moeda. |
 | RF10 | O widget deve ter um botão de lápis que abre uma janelinha por cima da tela inicial, com o modo e os campos de pergunta, cara e coroa (cada um com um rótulo fixo que continua visível depois de digitar) e o botão **"Salvar"**. Salvar começa um jogo novo: zera placar, sequência e último resultado, mantém modo, pergunta e textos, e o widget fica esperando o toque na moeda, mostrando a pergunta e "Toque para girar". A janelinha avisa que o jogo atual será zerado. Tocar na moeda continua girando na hora, sem digitar. |
 | RF11 | Os textos de cara e coroa e a pergunta continuam guardados entre os giros, até o usuário mudá-los ou tocar em "Zerar tudo". São vazios por padrão. |
-| RF12 | O usuário escolhe o modo marcando uma opção fixa: **Cara ou Coroa?** (padrão), **Melhor de 5**, **Melhor de 7** ou **Livre (sem fim)**, nesta ordem. Não há campo para digitar número. |
+| RF12 | O usuário escolhe o modo marcando uma opção fixa: **Cara ou Coroa?** (padrão), **Melhor de 5** ou **Livre (sem fim)**, nesta ordem (o "Melhor de 7" foi removido, D16). Não há campo para digitar número. |
 | RF13 | **Cara ou Coroa?:** um giro só; depois dele aparece sobre a moeda o resultado grande (o texto digitado para o lado que saiu, ou CARA/COROA) e o botão "Jogar novamente?", sem "venceu!". **Modo livre:** cada toque na moeda é um giro, e o placar conta cara e coroa sem fim. Não há vencedor. A linha da sequência mostra os últimos 5 giros. Quando o app sai da tela, o placar do modo livre é zerado (girar a tela do celular não zera). |
 | RF14 | **Melhor de 5 ou 7:** cada toque é um giro. A série termina quando um lado chega a N/2 + 1 vitórias (5 = 3; 7 = 4), e os giros que sobrariam não são jogados. A linha da sequência mostra todos os giros da série. |
 | RF15 | Quando a série termina, aparece **sobre a moeda** o vencedor em letras grandes, "venceu!" e o botão **"Jogar novamente?"**. Enquanto isso, tocar na moeda não gira. |

@@ -3,7 +3,9 @@ package com.deverasrenato.caraoucoroa
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Paint
-import android.graphics.Typeface
+import android.graphics.Path
+import android.graphics.RadialGradient
+import android.graphics.Shader
 import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.cos
@@ -22,13 +24,44 @@ object Coin {
     // A "tinta" usada para desenhar (criada uma vez só)
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
 
+    // Degradê dourado (grade de 200 x 200): claro no canto de cima à esquerda, escuro embaixo
+    private val goldShader = RadialGradient(
+        60f, 52f, 186f,
+        intArrayOf(0xFFFFF0A8.toInt(), 0xFFFFD24F.toInt(), 0xFFF2AE12.toInt(), 0xFFC98500.toInt()),
+        floatArrayOf(0f, 0.38f, 0.72f, 1f),
+        Shader.TileMode.CLAMP
+    )
+
+    // Silhueta neutra de uma pessoa (cabeça e ombros), usada na CARA
+    private val personPath = Path().apply {
+        addCircle(100f, 70f, 27f, Path.Direction.CW)
+        moveTo(48f, 152f)
+        cubicTo(48f, 122f, 72f, 108f, 100f, 108f)
+        cubicTo(128f, 108f, 152f, 122f, 152f, 152f)
+        close()
+    }
+
+    // Silhueta simples de uma coroa (pontas e base), usada na COROA
+    private val crownPath = Path().apply {
+        moveTo(16f, 70f)
+        lineTo(10f, 30f)
+        lineTo(33f, 50f)
+        lineTo(50f, 20f)
+        lineTo(67f, 50f)
+        lineTo(90f, 30f)
+        lineTo(84f, 70f)
+        close()
+        addRoundRect(16f, 74f, 84f, 88f, 4f, 4f, Path.Direction.CW)
+    }
+
     // Monta UM quadro da animação.
     // startSide: lado que estava para cima antes de girar
     // result:    lado que vai ficar para cima no final
     // progress:  0.0 (começo) até 1.0 (fim)
-    fun frame(startSide: Int, result: Int, progress: Float): Bitmap {
+    // baseTurns: quantos meios giros dar (8 na jogada normal; a abertura usa menos, para girar devagar)
+    fun frame(startSide: Int, result: Int, progress: Float, baseTurns: Int = 8): Bitmap {
         // Se o resultado é diferente do lado inicial, precisa de meio giro a mais
-        val halfTurns = 8 + (if (startSide == result) 0 else 1)
+        val halfTurns = baseTurns + (if (startSide == result) 0 else 1)
 
         // Começa rápido e vai desacelerando
         val eased = 1f - (1f - progress) * (1f - progress)
@@ -70,30 +103,58 @@ object Coin {
         canvas.translate(centerX, centerY)
         canvas.scale(1f, max(abs(spin), 0.06f))
 
-        // Borda
-        paint.color = 0xFFB8860B.toInt()
-        canvas.drawCircle(0f, 0f, RADIUS, paint)
+        // O desenho da moeda foi feito numa grade de 200 x 200 (centro em 100,100, raio 98).
+        // Aqui diminuímos para o tamanho real e movemos o centro da grade para o (0,0).
+        canvas.scale(RADIUS / 98f, RADIUS / 98f)
+        canvas.translate(-100f, -100f)
 
-        // Corpo dourado
-        paint.color = 0xFFFFC83D.toInt()
-        canvas.drawCircle(0f, 0f, RADIUS - 7f, paint)
-
-        // Anel decorativo
-        paint.style = Paint.Style.STROKE
-        paint.strokeWidth = 3f
-        paint.color = 0xFFE0A526.toInt()
-        canvas.drawCircle(0f, 0f, RADIUS - 16f, paint)
-
-        // Texto do lado (CARA ou COROA)
+        // Corpo dourado com degradê (mais claro em cima, à esquerda)
         paint.style = Paint.Style.FILL
-        paint.color = 0xFF7A5200.toInt()
-        paint.textAlign = Paint.Align.CENTER
-        paint.typeface = Typeface.DEFAULT_BOLD
-        paint.textSize = 28f
-        val textOffset = -(paint.ascent() + paint.descent()) / 2f // centraliza na vertical
-        canvas.drawText(sideName(side), 0f, textOffset, paint)
+        paint.color = 0xFF000000.toInt() // a cor precisa estar opaca, senão o degradê fica transparente
+        paint.shader = goldShader
+        canvas.drawCircle(100f, 100f, 98f, paint)
+        paint.shader = null
+
+        // Aro claro na borda e anel mais escuro por dentro
+        paint.style = Paint.Style.STROKE
+        paint.strokeWidth = 1.5f
+        paint.color = 0xB3FFF0A8.toInt()
+        canvas.drawCircle(100f, 100f, 97f, paint)
+        paint.strokeWidth = 3.5f
+        paint.color = 0x4D8C5A00
+        canvas.drawCircle(100f, 100f, 86f, paint)
+
+        // Desenho em relevo baixo: pessoa (cara) ou coroa (coroa), sem texto
+        paint.style = Paint.Style.FILL
+        if (side == HEADS) {
+            drawRelief(canvas, personPath, 1.05f, 98f, 100f)
+        } else {
+            drawRelief(canvas, crownPath, 1.7f, 54f, 50f)
+        }
 
         canvas.restore()
         return bitmap
+    }
+
+    // Desenha a silhueta 3 vezes: sombra (um pouco para cima/esquerda),
+    // luz (um pouco para baixo/direita) e a cor principal por cima. Isso cria o "relevo".
+    // zoom, baseY e baseX dizem onde a silhueta fica dentro da moeda.
+    private fun drawRelief(canvas: Canvas, shape: Path, zoom: Float, baseY: Float, baseX: Float) {
+        paint.color = 0x807A4B00.toInt()
+        drawShape(canvas, shape, zoom, baseY, baseX, -1.6f)
+        paint.color = 0xCCFFF6C2.toInt()
+        drawShape(canvas, shape, zoom, baseY, baseX, 1.6f)
+        paint.color = 0xFFF3B51C.toInt()
+        drawShape(canvas, shape, zoom, baseY, baseX, 0f)
+    }
+
+    private fun drawShape(canvas: Canvas, shape: Path, zoom: Float, baseY: Float, baseX: Float, shift: Float) {
+        canvas.save()
+        canvas.translate(shift, shift)
+        canvas.translate(100f, 100f)
+        canvas.scale(zoom, zoom)
+        canvas.translate(-baseX, -baseY)
+        canvas.drawPath(shape, paint)
+        canvas.restore()
     }
 }

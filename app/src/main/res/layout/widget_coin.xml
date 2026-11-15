@@ -18,7 +18,8 @@
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:background="@drawable/coin_glow">
 
             <ImageView
                 android:id="@+id/coin_image"
@@ -40,7 +41,12 @@
                 <TextView
                     android:id="@+id/winner_name"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:autoSizeMaxTextSize="26sp"
+                    android:autoSizeMinTextSize="12sp"
+                    android:autoSizeStepGranularity="1sp"
+                    android:autoSizeTextType="uniform"
                     android:ellipsize="end"
                     android:gravity="center"
                     android:maxLines="2"
@@ -68,7 +74,7 @@
                     android:paddingEnd="14dp"
                     android:paddingBottom="6dp"
                     android:text="@string/replay"
-                    android:textColor="#3A2A00"
+                    android:textColor="#3A2500"
                     android:textSize="13sp"
                     android:textStyle="bold" />
 
@@ -80,13 +86,23 @@
                     android:layout_marginTop="4dp"
                     android:padding="6dp"
                     android:text="@string/reset_all"
-                    android:textColor="#FF8A80"
+                    android:textColor="#FF9E95"
                     android:textSize="12sp"
                     android:textStyle="bold" />
 
             </LinearLayout>
 
         </FrameLayout>
+
+        <!-- Nome do lado que saiu, escrito embaixo da moeda -->
+        <TextView
+            android:id="@+id/result_name"
+            android:layout_width="match_parent"
+            android:layout_height="24dp"
+            android:gravity="center"
+            android:textColor="#FFC83D"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
         <!-- Texto fixo abaixo da moeda, tudo centralizado -->
         <!-- Linha 1: a pergunta -->
@@ -110,6 +126,7 @@
              então o "2 x 1" do meio fica SEMPRE no centro, não importa o tamanho dos textos.
              Cada lado pode usar até 2 linhas, e a letra diminui sozinha só se precisar. -->
         <LinearLayout
+            android:id="@+id/score_row"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:orientation="horizontal">
@@ -183,13 +200,13 @@
     <!-- Botão do lápis: abre a janelinha para digitar a pergunta -->
     <ImageView
         android:id="@+id/edit_button"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_gravity="top|end"
         android:layout_margin="6dp"
         android:background="@drawable/edit_button_background"
         android:contentDescription="@string/edit_button"
-        android:padding="7dp"
+        android:padding="9dp"
         android:src="@drawable/ic_edit" />
 
 </FrameLayout>

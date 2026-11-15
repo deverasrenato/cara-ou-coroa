@@ -1,7 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Cores da Moedinha: azul meia-noite e ouro -->
 <resources>
-    <color name="background">#1F2A44</color>
-    <color name="text">#FFFFFF</color>
-    <color name="text_soft">#AEB8D0</color>
+    <color name="background">#0B1030</color>
+    <color name="background_end">#151A45</color>
+    <color name="text">#F5F6FF</color>
+    <color name="text_soft">#A9B0D6</color>
     <color name="accent">#FFC83D</color>
+    <color name="accent_light">#FFD65A</color>
+    <color name="accent_dark">#FFB814</color>
+    <color name="on_accent">#3A2500</color>
+    <color name="danger">#FF9E95</color>
+    <color name="danger_line">#FF8A80</color>
+    <color name="card">#0FFFFFFF</color>
+    <color name="card_line">#1CFFFFFF</color>
+    <color name="field">#8C080C24</color>
+    <color name="field_line">#29FFFFFF</color>
+    <color name="widget_top">#151A45</color>
+    <color name="widget_bottom">#0B1030</color>
 </resources>

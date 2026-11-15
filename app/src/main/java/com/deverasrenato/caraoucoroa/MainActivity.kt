@@ -3,6 +3,7 @@ package com.deverasrenato.caraoucoroa
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ValueAnimator
+import android.content.Intent
 import android.os.Bundle
 import android.view.GestureDetector
 import android.view.MotionEvent
@@ -35,6 +36,11 @@ class MainActivity : AppCompatActivity() {
     private lateinit var replayButton: TextView
     private lateinit var vibrationCheck: CheckBox
 
+    // Número do giro atual. Quando o usuário troca o modo no meio de um giro, o número
+    // aumenta e o giro antigo percebe que não vale mais (não guarda resultado).
+    private var flipVersion = 0
+    private var currentAnimator: ValueAnimator? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -61,6 +67,28 @@ class MainActivity : AppCompatActivity() {
         }
 
         flipButton.setOnClickListener { flip() }
+
+        // Rever as boas-vindas do widget
+        findViewById<View>(R.id.welcome_review_button).setOnClickListener {
+            val intent = Intent(this, WelcomeActivity::class.java)
+            intent.putExtra(WelcomeActivity.EXTRA_FROM_MAIN, true)
+            startActivity(intent)
+        }
+
+        // Trocar "Quantas vezes jogar?" começa um jogo novo (placar zerado, moeda parada).
+        // Só vale quando o modo realmente mudou: assim, marcar a opção ao abrir a tela não zera nada.
+        seriesGroup.setOnCheckedChangeListener { group, _ ->
+            val newSize = readSeriesSize(group)
+            if (newSize != CoinStore.getSeriesSize(this)) {
+                // Se a moeda estava girando, cancela: o resultado antigo não vale mais
+                flipVersion++
+                currentAnimator?.cancel()
+                CoinStore.saveSeriesSize(this, newSize) // trocar o modo já começa um jogo novo
+                flipButton.isEnabled = true
+                showStillCoin()
+                CoinWidgetProvider.updateAll(this)
+            }
+        }
 
         // Na moeda: tocar OU deslizar o dedo para cima gira (como jogar a moeda para o alto).
         // O GestureDetector reconhece cada gesto separado, então um deslize não conta como toque.
@@ -127,7 +155,7 @@ class MainActivity : AppCompatActivity() {
     override fun onStop() {
         super.onStop()
         if (!isChangingConfigurations && CoinStore.isFreeMode(this)) {
-            CoinStore.resetScores(this)
+            CoinStore.startNewGame(this)
             CoinWidgetProvider.updateAll(this)
         }
     }
@@ -151,23 +179,22 @@ class MainActivity : AppCompatActivity() {
 
     // Escreve os 5 textos fixos abaixo da moeda (cada um sempre no mesmo lugar)
     private fun showBoard() {
-        val texts = if (CoinStore.hasResult(this)) {
-            boardTexts(this)
-        } else {
-            readyBoard(this, "Toque na moeda")
-        }
+        val texts = currentBoard(this, "Toque na moeda")
         for (i in 0..4) {
             findViewById<TextView>(BOARD_IDS[i]).text = texts[i]
         }
+        // Nome do lado que saiu, embaixo da moeda
+        findViewById<TextView>(R.id.result_name).text = resultText(this)
+        // No modo de 1 giro não há placar: a linha some e o cartão fica menor
+        findViewById<View>(R.id.score_row).visibility =
+            if (showScoreRow(this)) View.VISIBLE else View.GONE
     }
 
     // Mostra (ou esconde) a camada do vencedor, por cima da moeda
+    // No modo "Cara ou Coroa?" (1 giro) não há balão: o resultado escrito embaixo da moeda basta
     private fun showWinner(show: Boolean) {
-        if (show) {
+        if (show && !CoinStore.isSingleMode(this)) {
             winnerName.text = sideLabel(this, CoinStore.winnerSide(this))
-            // No modo "Cara ou Coroa?" (1 giro) não faz sentido escrever "venceu!"
-            findViewById<View>(R.id.winner_suffix).visibility =
-                if (CoinStore.isSingleMode(this)) View.GONE else View.VISIBLE
             winnerLayer.visibility = View.VISIBLE
         } else {
             winnerLayer.visibility = View.GONE
@@ -177,13 +204,15 @@ class MainActivity : AppCompatActivity() {
     private fun showStillCoin() {
         val side = CoinStore.lastSide(this)
         coinImage.setImageBitmap(Coin.still(side))
+        // A moeda não tem mais texto: o leitor de tela diz qual lado está para cima
+        coinImage.contentDescription = sideName(side)
         showBoard()
         showWinner(CoinStore.isSeriesFinished(this))
     }
 
     // "Jogar novamente?": zera o placar e começa outra série com as mesmas configurações
     private fun replay() {
-        CoinStore.resetScores(this)
+        CoinStore.startNewGame(this)
         showStillCoin()
         CoinWidgetProvider.updateAll(this)
     }
@@ -192,10 +221,40 @@ class MainActivity : AppCompatActivity() {
         // Guarda o que o usuário digitou antes de girar
         saveInputs()
 
-        // Série terminada: não gira mais. O usuário toca em "Jogar novamente?"
-        if (CoinStore.isSeriesFinished(this)) return
-
+        // Já está girando (ou fechando o balão): ignora o toque
+        if (!flipButton.isEnabled) return
         flipButton.isEnabled = false
+
+        // Série terminada: girar entende "jogar novamente". Primeiro o balão fecha (rápido);
+        // só depois a moeda gira.
+        if (CoinStore.isSeriesFinished(this)) {
+            flipVersion++ // cancela o balão do vencedor que ainda não tinha aparecido
+            if (winnerLayer.visibility == View.VISIBLE) {
+                winnerLayer.animate().alpha(0f).setDuration(200).withEndAction {
+                    winnerLayer.alpha = 1f
+                    startNewRound()
+                    spin()
+                }.start()
+            } else {
+                startNewRound()
+                spin()
+            }
+            return
+        }
+        spin()
+    }
+
+    // Começa outra série: zera o placar e tira a camada do vencedor
+    private fun startNewRound() {
+        CoinStore.startNewGame(this)
+        showWinner(false)
+        showBoard()
+        CoinWidgetProvider.updateAll(this)
+    }
+
+    // A animação do giro e o que acontece quando a moeda para
+    private fun spin() {
+        val myVersion = flipVersion
 
         val startSide = CoinStore.lastSide(this)
         val result = if (Random.nextBoolean()) HEADS else TAILS
@@ -211,6 +270,8 @@ class MainActivity : AppCompatActivity() {
         }
         animator.addListener(object : AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator) {
+                // O modo mudou durante o giro: este giro foi descartado
+                if (myVersion != flipVersion) return
                 CoinStore.saveResult(this@MainActivity, result)
                 vibrate(this@MainActivity, 40) // toquinho quando a moeda para
                 showBoard()
@@ -219,14 +280,16 @@ class MainActivity : AppCompatActivity() {
                 CoinWidgetProvider.updateAll(this@MainActivity)
 
                 // Se a série terminou, espera um instante (para ver a moeda) e mostra o vencedor
-                if (CoinStore.isSeriesFinished(this@MainActivity)) {
+                if (CoinStore.isSeriesFinished(this@MainActivity) && !CoinStore.isSingleMode(this@MainActivity)) {
                     coinImage.postDelayed({
+                        if (myVersion != flipVersion) return@postDelayed
                         showWinner(true)
                         vibrate(this@MainActivity, 150) // vibração mais longa para o vencedor
                     }, Coin.WINNER_DELAY_MS)
                 }
             }
         })
+        currentAnimator = animator
         animator.start()
     }
 }

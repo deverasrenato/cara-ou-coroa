@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Fundo do widget: o mesmo azul meia-noite do app, cantos bem arredondados -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
-    <solid android:color="#1F2A44" />
-    <corners android:radius="24dp" />
+    <gradient
+        android:angle="270"
+        android:centerColor="@color/background_end"
+        android:endColor="#0E1233"
+        android:startColor="@color/background" />
+    <corners android:radius="28dp" />
 </shape>

@@ -11,11 +11,12 @@ Plano pensado para quem está no **2º período de ADS**: poucas coisas por vez,
 - Modos "Cara ou Coroa?" (padrão), melhor de 5/7 e livre, vencedor grande, "Jogar novamente?" e "Zerar tudo" (D06, D08, D09, D12).
 - Janelinha com "Salvar", vibração com opção de desligar e número da versão (D11, D12).
 - No app, deslizar para cima na moeda também gira (D07).
+- Novo visual (D14, D15): nome Moedinha, meia-noite e ouro, moeda em relevo sem texto, ícone novo e fontes Baloo 2 e Nunito. A tela principal foi conferida no emulador; widget e janelinha ainda não.
+- Abertura (moeda girando) e boas-vindas do widget (D18): conferidas por captura no emulador; botões ainda não testados por toque.
 
 **Ainda não existe:**
-- Teste em celular de verdade (no emulador já funciona).
-- Repositório no GitHub.
-- Ícone final, visual final do widget e som.
+- Teste do novo visual em celular de verdade (no emulador já funciona).
+- Som.
 - Testes em mais celulares (o do usuário é um Galaxy S23 com letra pequena; o emulador se comportou melhor).
 
 ## 2. O app, em uma frase
@@ -54,7 +55,7 @@ Cortar cedo é o que garante que o MVP fique pronto.
 - **Situação:** código pronto e compilando; falta o usuário testar.
 
 ### Etapa 2.6 — Modos de jogo (Cara ou Coroa?, melhor de 5 e 7, livre)
-- Opções Cara ou Coroa? / melhor de 5 / melhor de 7 / Livre (marcar), linhas fixas e centralizadas abaixo da moeda (pergunta, placar em 3 colunas, sequência ●/○).
+- Opções Cara ou Coroa? / melhor de 5 / Livre (marcar), linhas fixas e centralizadas abaixo da moeda (pergunta, placar em 3 colunas, sequência ●/○).
 - **Pronto quando:** no modo livre o placar conta sem fim; em "melhor de 5", cada toque gira uma vez, o texto não pula e ao chegar a 3 vitórias o vencedor aparece grande sobre a moeda.
 - **Você aprende:** `RadioGroup` (opções de marcar), `SharedPreferences` com mais de um dado, estado que dura mais de um toque.
 - **Situação:** código pronto, compilando e conferido visualmente no emulador (D06); falta o usuário testar.
@@ -66,9 +67,10 @@ Cortar cedo é o que garante que o MVP fique pronto.
 - **Situação:** código pronto e compilando; ainda não testados por toque: "Jogar novamente?" e "Zerar tudo". Falta testar no celular de verdade.
 
 ### Etapa 3 — Acabamento
-- Ícone, cores, texto do widget e (opcional) vibração.
+- Ícone, cores, fontes, moeda em relevo e nome Moedinha (D14, D15).
 - **Pronto quando:** o visual está bom o suficiente para mostrar a outras pessoas.
-- **Você aprende:** recursos do Android (`res/`) e design.
+- **Você aprende:** recursos do Android (`res/`), `Path` e `RadialGradient` para desenhar, fontes e design.
+- **Situação:** código pronto e compilando; tela principal conferida no emulador. Falta conferir widget e janelinha e testar no celular.
 
 ### Etapa 4 — APK de teste
 - Gerar o APK pelo Android Studio e instalar em outro celular.

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Brilho dourado atrás da moeda -->
+    <View
+        android:layout_width="420dp"
+        android:layout_height="420dp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="80dp"
+        android:background="@drawable/coin_glow" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <!-- A moeda gira devagar, como na jogada -->
+        <ImageView
+            android:id="@+id/splash_coin"
+            android:layout_width="280dp"
+            android:layout_height="280dp"
+            android:contentDescription="@string/coin" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:fontFamily="@font/title_font"
+            android:shadowColor="#A56B00"
+            android:shadowDy="5"
+            android:shadowRadius="1"
+            android:text="@string/app_name"
+            android:textColor="@color/accent"
+            android:textSize="56sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/body_font"
+            android:text="@string/splash_tagline"
+            android:textColor="#E6E9FF"
+            android:textSize="17sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/splash_version"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="32dp"
+        android:fontFamily="@font/body_font"
+        android:textColor="@color/text_soft"
+        android:textSize="12sp"
+        android:textStyle="bold" />
+
+</FrameLayout>

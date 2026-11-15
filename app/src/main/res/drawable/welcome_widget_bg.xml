@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- O widget de exemplo, com contorno dourado para chamar atenção -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <gradient
+        android:angle="270"
+        android:endColor="@color/background"
+        android:startColor="@color/widget_top" />
+    <stroke
+        android:width="2dp"
+        android:color="@color/accent" />
+    <corners android:radius="24dp" />
+</shape>

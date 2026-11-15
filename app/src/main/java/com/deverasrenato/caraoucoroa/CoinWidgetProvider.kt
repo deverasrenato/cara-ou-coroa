@@ -33,7 +33,7 @@ class CoinWidgetProvider : AppWidgetProvider() {
         }
         if (intent.action == ACTION_REPLAY) {
             // "Jogar novamente?": zera o placar e mantém pergunta, textos e modo
-            CoinStore.resetScores(context)
+            CoinStore.startNewGame(context)
             updateAll(context)
         }
     }
@@ -41,9 +41,6 @@ class CoinWidgetProvider : AppWidgetProvider() {
     private fun flip(context: Context) {
         // Se já está girando, ignora o toque
         if (isFlipping) return
-
-        // Série terminada: não gira mais. O usuário toca em "Jogar novamente?"
-        if (CoinStore.isSeriesFinished(context)) return
 
         isFlipping = true
 
@@ -58,6 +55,19 @@ class CoinWidgetProvider : AppWidgetProvider() {
                 val ids = manager.getAppWidgetIds(
                     ComponentName(appContext, CoinWidgetProvider::class.java)
                 )
+
+                // Série terminada: tocar na moeda entende "jogar novamente". Primeiro o balão
+                // do vencedor some; só depois a moeda gira.
+                if (CoinStore.isSeriesFinished(appContext)) {
+                    CoinStore.startNewGame(appContext)
+                    for (id in ids) {
+                        showResult(appContext, manager, id, false)
+                    }
+                    // Só espera o balão sumir quando ele existia (no modo de 1 giro não há balão)
+                    if (!CoinStore.isSingleMode(appContext)) {
+                        Thread.sleep(250)
+                    }
+                }
 
                 val startSide = CoinStore.lastSide(appContext)
                 val result = if (Random.nextBoolean()) HEADS else TAILS
@@ -81,7 +91,7 @@ class CoinWidgetProvider : AppWidgetProvider() {
                 }
 
                 // Se a série terminou, espera um instante e mostra o vencedor por cima da moeda
-                if (CoinStore.isSeriesFinished(appContext)) {
+                if (CoinStore.isSeriesFinished(appContext) && !CoinStore.isSingleMode(appContext)) {
                     Thread.sleep(Coin.WINNER_DELAY_MS)
                     for (id in ids) {
                         showResult(appContext, manager, id, true)
@@ -111,18 +121,17 @@ class CoinWidgetProvider : AppWidgetProvider() {
             views.setImageViewBitmap(R.id.coin_image, Coin.still(side))
 
             // Os 5 textos abaixo da moeda
-            val texts = if (CoinStore.hasResult(context)) {
-                boardTexts(context)
-            } else {
-                readyBoard(context, "Toque para girar")
-            }
+            val texts = currentBoard(context, "Toque para girar")
             for (i in 0..4) {
                 views.setTextViewText(BOARD_IDS[i], texts[i])
             }
+            // Nome do lado que saiu, embaixo da moeda; sem placar no modo de 1 giro
+            views.setTextViewText(R.id.result_name, resultText(context))
+            views.setViewVisibility(R.id.score_row, if (showScoreRow(context)) View.VISIBLE else View.GONE)
 
             // Camada do vencedor, por cima da moeda
             val winner = CoinStore.winnerSide(context)
-            if (showWinner && winner >= 0) {
+            if (showWinner && winner >= 0 && !CoinStore.isSingleMode(context)) {
                 views.setViewVisibility(R.id.winner_layer, View.VISIBLE)
                 views.setTextViewText(R.id.winner_name, sideLabel(context, winner))
                 // No modo "Cara ou Coroa?" (1 giro) não faz sentido escrever "venceu!"

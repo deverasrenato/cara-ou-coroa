@@ -6,20 +6,32 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@drawable/ic_launcher"
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:label="@string/app_name"
         android:theme="@style/Theme.CaraOuCoroa">
 
-        <!-- Tela principal do app -->
+        <!-- Abertura: é a primeira tela quando o usuário abre o app -->
         <activity
-            android:name=".MainActivity"
+            android:name=".SplashActivity"
             android:exported="true"
-            android:windowSoftInputMode="adjustResize">
+            android:theme="@style/Theme.CaraOuCoroa.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- Boas-vindas, com a dica de adicionar o widget -->
+        <activity
+            android:name=".WelcomeActivity"
+            android:exported="false" />
+
+        <!-- Tela principal do app -->
+        <activity
+            android:name=".MainActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
 
         <!-- Janelinha aberta pelo lápis do widget (não vai para a lista de apps recentes) -->
         <activity

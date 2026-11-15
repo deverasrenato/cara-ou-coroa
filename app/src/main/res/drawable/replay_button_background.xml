@@ -2,6 +2,9 @@
 <!-- Fundo dourado do botão "Jogar novamente?" -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
-    <solid android:color="#FFC83D" />
-    <corners android:radius="20dp" />
+    <gradient
+        android:angle="270"
+        android:endColor="@color/accent_dark"
+        android:startColor="@color/accent_light" />
+    <corners android:radius="999dp" />
 </shape>

@@ -2,7 +2,6 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background"
     android:fillViewport="true">
 
     <LinearLayout
@@ -10,13 +9,47 @@
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:orientation="vertical"
-        android:padding="24dp">
+        android:padding="20dp">
+
+        <!-- Cabeçalho: nome do app e versão -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:fontFamily="@font/title_font"
+                android:text="@string/app_name"
+                android:textColor="@color/accent"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/version_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:background="@drawable/card_background"
+                android:paddingStart="10dp"
+                android:paddingTop="4dp"
+                android:paddingEnd="10dp"
+                android:paddingBottom="4dp"
+                android:textColor="@color/text_soft"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+        </RelativeLayout>
 
         <!-- A moeda, com a camada do vencedor por cima (escondida até a série terminar) -->
         <FrameLayout
-            android:layout_width="260dp"
-            android:layout_height="260dp"
-            android:layout_marginTop="16dp">
+            android:layout_width="320dp"
+            android:layout_height="320dp"
+            android:layout_marginTop="-10dp"
+            android:background="@drawable/coin_glow"
+            android:padding="30dp">
 
             <ImageView
                 android:id="@+id/coin_image"
@@ -37,8 +70,13 @@
                 <TextView
                     android:id="@+id/winner_name"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="68dp"
+                    android:autoSizeMaxTextSize="36sp"
+                    android:autoSizeMinTextSize="16sp"
+                    android:autoSizeStepGranularity="1sp"
+                    android:autoSizeTextType="uniform"
                     android:ellipsize="end"
+                    android:fontFamily="@font/title_font"
                     android:gravity="center"
                     android:maxLines="2"
                     android:textColor="@color/accent"
@@ -60,13 +98,14 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:background="@drawable/replay_button_background"
-                    android:paddingStart="20dp"
+                    android:fontFamily="@font/title_font"
+                    android:paddingStart="24dp"
                     android:paddingTop="10dp"
-                    android:paddingEnd="20dp"
+                    android:paddingEnd="24dp"
                     android:paddingBottom="10dp"
                     android:text="@string/replay"
-                    android:textColor="#3A2A00"
-                    android:textSize="16sp"
+                    android:textColor="@color/on_accent"
+                    android:textSize="17sp"
                     android:textStyle="bold" />
 
                 <!-- Botão pequeno: pede confirmação e apaga tudo -->
@@ -77,7 +116,7 @@
                     android:layout_marginTop="8dp"
                     android:padding="10dp"
                     android:text="@string/reset_all"
-                    android:textColor="#FF8A80"
+                    android:textColor="@color/danger"
                     android:textSize="14sp"
                     android:textStyle="bold" />
 
@@ -85,238 +124,260 @@
 
         </FrameLayout>
 
-        <!-- Texto fixo abaixo da moeda, tudo centralizado (cada linha sempre no mesmo lugar) -->
-        <!-- Linha 1: a pergunta -->
+        <!-- Nome do lado que saiu, escrito embaixo da moeda -->
         <TextView
-            android:id="@+id/line_1"
+            android:id="@+id/result_name"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:autoSizeMaxTextSize="24sp"
-            android:autoSizeMinTextSize="12sp"
-            android:autoSizeStepGranularity="1sp"
-            android:autoSizeTextType="uniform"
-            android:ellipsize="end"
+            android:layout_height="36dp"
+            android:layout_marginTop="-24dp"
+            android:fontFamily="@font/title_font"
             android:gravity="center"
-            android:maxLines="1"
-            android:textColor="@color/text"
-            android:textSize="24sp"
+            android:textColor="@color/accent"
+            android:textSize="26sp"
             android:textStyle="bold" />
 
-        <!-- Placar em 3 colunas: os dois lados têm a mesma largura (peso 1),
-             então o "2 x 1" do meio fica SEMPRE no centro.
-             Cada lado pode usar até 2 linhas, e a letra diminui sozinha só se precisar. -->
+        <!-- Placar dentro de um cartão. Texto fixo, tudo centralizado (cada linha sempre no mesmo lugar) -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="72dp"
-            android:orientation="horizontal">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="0dp"
+            android:background="@drawable/card_background"
+            android:orientation="vertical"
+            android:padding="10dp">
 
+            <!-- Linha 1: a pergunta -->
             <TextView
-                android:id="@+id/score_left"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
+                android:id="@+id/line_1"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
                 android:autoSizeMaxTextSize="24sp"
                 android:autoSizeMinTextSize="12sp"
                 android:autoSizeStepGranularity="1sp"
                 android:autoSizeTextType="uniform"
                 android:ellipsize="end"
-                android:gravity="bottom|end"
-                android:maxLines="2"
-                android:textAlignment="viewEnd"
+                android:fontFamily="@font/title_font"
+                android:gravity="center"
+                android:maxLines="1"
                 android:textColor="@color/text"
                 android:textSize="24sp"
                 android:textStyle="bold" />
 
+            <!-- Placar em 3 colunas: os dois lados têm a mesma largura (peso 1),
+                 então o "2 x 1" do meio fica SEMPRE no centro.
+                 Cada lado pode usar até 2 linhas, e a letra diminui sozinha só se precisar. -->
+            <LinearLayout
+                android:id="@+id/score_row"
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/score_left"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:autoSizeMaxTextSize="24sp"
+                    android:autoSizeMinTextSize="12sp"
+                    android:autoSizeStepGranularity="1sp"
+                    android:autoSizeTextType="uniform"
+                    android:ellipsize="end"
+                    android:gravity="bottom|end"
+                    android:maxLines="2"
+                    android:textAlignment="viewEnd"
+                    android:textColor="@color/text"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/score_center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:fontFamily="@font/title_font"
+                    android:gravity="center_horizontal|bottom"
+                    android:maxLines="2"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:textColor="@color/accent"
+                    android:textSize="22sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/score_right"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:autoSizeMaxTextSize="24sp"
+                    android:autoSizeMinTextSize="12sp"
+                    android:autoSizeStepGranularity="1sp"
+                    android:autoSizeTextType="uniform"
+                    android:ellipsize="end"
+                    android:gravity="bottom|start"
+                    android:maxLines="2"
+                    android:textAlignment="viewStart"
+                    android:textColor="@color/text"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <!-- Linha 3: o que saiu em cada giro -->
             <TextView
-                android:id="@+id/score_center"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center_horizontal|bottom"
-                android:maxLines="2"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
+                android:id="@+id/line_3"
+                android:layout_width="match_parent"
+                android:layout_height="26dp"
+                android:autoSizeMaxTextSize="20sp"
+                android:autoSizeMinTextSize="12sp"
+                android:autoSizeStepGranularity="1sp"
+                android:autoSizeTextType="uniform"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:maxLines="1"
                 android:textColor="@color/accent"
-                android:textSize="22sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/score_right"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:autoSizeMaxTextSize="24sp"
-                android:autoSizeMinTextSize="12sp"
-                android:autoSizeStepGranularity="1sp"
-                android:autoSizeTextType="uniform"
-                android:ellipsize="end"
-                android:gravity="bottom|start"
-                android:maxLines="2"
-                android:textAlignment="viewStart"
-                android:textColor="@color/text"
-                android:textSize="24sp"
+                android:textSize="20sp"
                 android:textStyle="bold" />
 
         </LinearLayout>
 
-        <!-- Linha 3: o que saiu em cada giro -->
-        <TextView
-            android:id="@+id/line_3"
+        <!-- Botão principal dourado -->
+        <Button
+            android:id="@+id/flip_button"
             android:layout_width="match_parent"
-            android:layout_height="32dp"
-            android:autoSizeMaxTextSize="20sp"
-            android:autoSizeMinTextSize="12sp"
-            android:autoSizeStepGranularity="1sp"
-            android:autoSizeTextType="uniform"
-            android:ellipsize="end"
-            android:gravity="center"
-            android:maxLines="1"
-            android:textColor="@color/accent"
+            android:layout_height="58dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/button_primary"
+            android:fontFamily="@font/title_font"
+            android:stateListAnimator="@null"
+            android:text="@string/flip_button"
+            android:textAllCaps="false"
+            android:textColor="@color/on_accent"
             android:textSize="20sp"
             android:textStyle="bold" />
 
-        <Button
-            android:id="@+id/flip_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="@string/flip_button" />
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/swipe_hint"
+            android:textColor="@color/text_soft"
+            android:textSize="13sp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
+            android:fontFamily="@font/title_font"
             android:text="@string/series_title"
             android:textColor="@color/text"
-            android:textSize="16sp"
+            android:textSize="18sp"
             android:textStyle="bold" />
 
-        <!-- As opções ficam uma embaixo da outra para caber em telas estreitas -->
+        <!-- As opções ficam uma embaixo da outra (cada uma é um botão largo) -->
         <RadioGroup
             android:id="@+id/series_group"
-            android:layout_width="wrap_content"
+            android:baselineAligned="false"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_marginStart="-4dp"
+            android:layout_marginTop="6dp"
+            android:layout_marginEnd="-4dp"
+            android:orientation="horizontal">
 
             <RadioButton
                 android:id="@+id/series_1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/series_1"
-                android:textColor="@color/text" />
+                style="@style/ModeOption"
+                android:text="@string/series_1" />
 
             <RadioButton
                 android:id="@+id/series_5"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/series_5"
-                android:textColor="@color/text" />
-
-            <RadioButton
-                android:id="@+id/series_7"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/series_7"
-                android:textColor="@color/text" />
+                style="@style/ModeOption"
+                android:text="@string/series_5" />
 
             <RadioButton
                 android:id="@+id/series_free"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/series_free"
-                android:textColor="@color/text" />
+                style="@style/ModeOption"
+                android:text="@string/series_free" />
 
         </RadioGroup>
 
-        <!-- Rótulo fixo: continua visível depois que o usuário digita -->
-        <TextView
+        <!-- Campos dentro de um cartão -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="@string/field_question"
-            android:textColor="@color/accent"
-            android:textSize="14sp"
-            android:textStyle="bold" />
+            android:layout_marginTop="20dp"
+            android:background="@drawable/card_background"
+            android:orientation="vertical"
+            android:padding="16dp">
 
-        <EditText
-            android:id="@+id/question_input"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/question_hint"
-            android:imeOptions="actionNext"
-            android:inputType="text"
-            android:maxLength="40"
-            android:maxLines="1"
-            android:textColor="@color/text"
-            android:textColorHint="@color/text_soft" />
+            <!-- Rótulo fixo: continua visível depois que o usuário digita -->
+            <TextView
+                style="@style/FieldLabel"
+                android:text="@string/field_question" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="@string/labels_title"
-            android:textColor="@color/text"
-            android:textSize="16sp"
-            android:textStyle="bold" />
+            <EditText
+                android:id="@+id/question_input"
+                style="@style/FieldInput"
+                android:hint="@string/question_hint"
+                android:imeOptions="actionNext"
+                android:inputType="text"
+                android:maxLength="40" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="@string/field_heads"
-            android:textColor="@color/accent"
-            android:textSize="14sp"
-            android:textStyle="bold" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:fontFamily="@font/title_font"
+                android:text="@string/labels_title"
+                android:textColor="@color/text"
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
-        <EditText
-            android:id="@+id/heads_input"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/heads_hint"
-            android:imeOptions="actionNext"
-            android:inputType="text"
-            android:maxLength="20"
-            android:maxLines="1"
-            android:textColor="@color/text"
-            android:textColorHint="@color/text_soft" />
+            <TextView
+                style="@style/FieldLabel"
+                android:layout_marginTop="8dp"
+                android:text="@string/field_heads" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="@string/field_tails"
-            android:textColor="@color/accent"
-            android:textSize="14sp"
-            android:textStyle="bold" />
+            <EditText
+                android:id="@+id/heads_input"
+                style="@style/FieldInput"
+                android:hint="@string/heads_hint"
+                android:imeOptions="actionNext"
+                android:inputType="text"
+                android:maxLength="20" />
 
-        <EditText
-            android:id="@+id/tails_input"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/tails_hint"
-            android:imeOptions="actionDone"
-            android:inputType="text"
-            android:maxLength="20"
-            android:maxLines="1"
-            android:textColor="@color/text"
-            android:textColorHint="@color/text_soft" />
+            <TextView
+                style="@style/FieldLabel"
+                android:layout_marginTop="8dp"
+                android:text="@string/field_tails" />
 
-        <CheckBox
-            android:id="@+id/vibration_check"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="@string/vibration"
-            android:textColor="@color/text" />
+            <EditText
+                android:id="@+id/tails_input"
+                style="@style/FieldInput"
+                android:hint="@string/tails_hint"
+                android:imeOptions="actionDone"
+                android:inputType="text"
+                android:maxLength="20" />
+
+            <CheckBox
+                android:id="@+id/vibration_check"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="@string/vibration"
+                android:textColor="@color/text" />
+
+        </LinearLayout>
 
         <!-- "Zerar tudo" em destaque: botão largo, com contorno vermelho claro -->
         <Button
             android:id="@+id/reset_button"
             android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:layout_marginTop="24dp"
+            android:layout_height="52dp"
+            android:layout_marginTop="20dp"
             android:background="@drawable/reset_button_background"
+            android:stateListAnimator="@null"
             android:text="@string/reset_all"
-            android:textColor="#FF8A80"
+            android:textAllCaps="false"
+            android:textColor="@color/danger"
             android:textSize="16sp"
             android:textStyle="bold" />
 
@@ -327,16 +388,19 @@
             android:gravity="center"
             android:text="@string/widget_tip"
             android:textColor="@color/text_soft"
-            android:textSize="14sp" />
+            android:textSize="13sp" />
 
-        <!-- Versão do app -->
+        <!-- Rever as boas-vindas do widget -->
         <TextView
-            android:id="@+id/version_text"
+            android:id="@+id/welcome_review_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:textColor="@color/text_soft"
-            android:textSize="12sp" />
+            android:layout_marginTop="8dp"
+            android:padding="12dp"
+            android:text="@string/welcome_review"
+            android:textColor="@color/accent"
+            android:textSize="14sp"
+            android:textStyle="bold" />
 
     </LinearLayout>
 

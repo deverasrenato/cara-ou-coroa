@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Brilho dourado suave atrás da moeda -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+    <gradient
+        android:centerColor="#14FFC83D"
+        android:endColor="#00FFC83D"
+        android:gradientRadius="170dp"
+        android:startColor="#47FFC83D"
+        android:type="radial" />
+</shape>

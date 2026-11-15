@@ -121,6 +121,55 @@ Este arquivo registra **o que foi decidido, por quê, e o que foi descartado**. 
 - **Alternativas descartadas:** botão sem confirmação no widget; deixar o widget só com o lápis (um toque a mais).
 - **Consequências:** uma tela nova (`ConfirmResetActivity`) e um tema transparente. A função `askResetAll` ganhou o parâmetro `afterClose`.
 
+### D14 — Nome do app: Moedinha
+- **Data:** 15/11/2026 · **Status:** Vigente
+- **Contexto:** o usuário escolheu um nome próprio para o app. A pasta e o repositório continuam `cara-ou-coroa`.
+- **Decisão:** o nome que aparece para o usuário (`app_name`, título da tela e dica do widget) passa a ser **Moedinha**. O `applicationId` continua `com.deverasrenato.caraoucoroa`.
+- **Fundamento:** trocar o `applicationId` faz o Android tratar como outro app (o celular instalaria uma segunda cópia e o placar salvo ficaria na antiga). Antes de publicar, ainda vale trocar, porque não haverá usuários para perder dados.
+- **Alternativas descartadas:** trocar o `applicationId` agora; renomear a pasta e o repositório (quebraria o vínculo com o GitHub sem ganho).
+- **Consequências:** o código e os identificadores continuam com o nome antigo (`CoinWidgetProvider`, tema `Theme.CaraOuCoroa`).
+
+### D15 — Identidade visual: meia-noite e ouro, moeda em relevo, ícone B e fontes
+- **Data:** 15/11/2026 · **Status:** Vigente (muda o visual provisório; a moeda deixa de ter texto)
+- **Contexto:** o usuário achou o app "triste". O design foi explorado num canvas (cores, telas, widget, moeda e ícone) e aprovado antes de mexer no código.
+- **Decisão:**
+  - **Cores:** azul meia-noite (`#0B1030` e `#151A45`) com ouro (`#FFC83D`), cartões translúcidos, botão principal dourado em pílula e "Zerar tudo" em vermelho claro.
+  - **Moeda:** continua desenhada por código (`Coin.kt`), agora com degradê dourado, aro, anel e uma silhueta em relevo baixo, **sem texto**: uma pessoa neutra (cara) e uma coroa (coroa). O relevo é a mesma silhueta desenhada três vezes (sombra, luz e cor principal).
+  - **Ícone:** opção B, uma moeda girando com uma coroa pequena, como ícone adaptativo (`mipmap-anydpi-v26`).
+  - **Fontes:** Baloo 2 (títulos e botões) e Nunito (textos), dentro do app em `res/font`, ambas com licença OFL (cópias em `docs/OFL-baloo2.txt` e `docs/OFL-nunito.txt`). O widget (`RemoteViews`) continua com a fonte do sistema, porque não aceita fonte própria.
+  - Tema escuro fixo; opções de modo viram botões largos com contorno dourado quando marcadas.
+- **Fundamento:** o lado da moeda se reconhece pela silhueta, então o texto some e o desenho fica limpo. Desenhar por código mantém o app leve e o código simples; as fontes variáveis aumentam o APK em cerca de 1 MB, o que é aceitável.
+- **Alternativas descartadas:** imagens prontas da moeda (mais pesadas e difíceis de animar); texto sobre a moeda (poluía o desenho); fonte do sistema no app todo; tema claro/escuro automático (as cores foram pensadas para o escuro).
+- **Ajustes depois do primeiro teste no emulador:** (1) trocar "Quantas vezes jogar?" no app agora começa um jogo novo na hora (placar zerado, moeda parada, camada do vencedor some) e cancela um giro em andamento; antes, o modo só era guardado ao sair da tela ou girar, e a camada "Jogar novamente?" ficava sobre a moeda. (2) No modo "Cara ou Coroa?", o cartão abaixo da moeda mostra o lado que saiu (CARA ou COROA) e, se houver, o texto digitado, no app e no widget, para não ficar vazio.
+- **Consequências:** a pergunta "Qual será o visual final da moeda?" foi respondida. O `contentDescription` da moeda no app diz o lado ("CARA"/"COROA") para leitores de tela. Falta conferir no celular do usuário (letra pequena do S23) e no widget.
+
+### D16 — Sem "Melhor de 7"; nome do lado embaixo da moeda; vidro translúcido do vencedor
+- **Data:** 15/11/2026 · **Status:** Vigente (muda a D12 e a D15)
+- **Contexto:** depois de testar o novo visual, o usuário achou o cartão do placar grande e vazio, quis ver "CARA" ou "COROA" escrito embaixo da moeda (app e widget), dispensou o "Melhor de 7" e quis a camada do vencedor parecendo estar por cima da moeda.
+- **Decisão:** modos: **Cara ou Coroa?**, **Melhor de 5** e **Livre (sem fim)**, lado a lado como no canvas (um 7 guardado vira o padrão). O nome do lado que saiu aparece em dourado embaixo da moeda depois do giro. No modo de 1 giro a linha do placar some, deixando o cartão menor. O fundo da camada do vencedor virou vidro escuro translúcido (70%) com contorno claro. O app ganhou o brilho dourado atrás da moeda e o cartão ficou mais compacto.
+- **Fundamento:** o nome escrito confirma o resultado (a moeda não tem mais texto) e mostra que o widget funcionou; o vidro translúcido deixa a moeda aparecer por baixo.
+- **Alternativas descartadas:** manter o "Melhor de 7"; mostrar o nome só no cartão.
+- **Ajustes depois do segundo teste:** (1) o nome do vencedor tem tamanho automático e altura fixa, então "Zerar tudo" não sai da camada quando o texto tem duas linhas; (2) girar com a série terminada (botão "Girar moeda", moeda do app ou moeda do widget) entende "jogar novamente": zera o placar, tira a camada e já gira; (3) a camada do vencedor ficou quase opaca (92%), porque a versão de 70% dificultava a leitura; (4) no modo de 1 giro, depois de "Jogar novamente?" o widget mostra "Cara ou Coroa?" (ou a pergunta) e "Toque para girar", em vez de ficar vazio; (5) o fundo do widget usa o mesmo degradê do app e o mesmo brilho atrás da moeda.
+- **Ajustes depois do terceiro teste:** (1) o balão do vencedor no app ficou mais compacto (nome com altura de 68 dp), para "Zerar tudo" caber com nome de duas linhas; (2) ao girar com o balão aberto, o balão fecha primeiro (200 ms no app, 250 ms no widget) e só depois a moeda gira; toques durante o giro são ignorados; (3) na janelinha, os botões de modo não alinham mais pela linha do texto (`baselineAligned="false"`) e o título repetido "Moedinha" foi escondido.
+- **Consequências:** o `series_7` saiu dos layouts e do código; o valor 7 deixou de ser aceito em `getSeriesSize`.
+
+### D17 — Regras de início e fim do jogo (estados e uma só função de início)
+- **Data:** 15/11/2026 · **Status:** Vigente
+- **Contexto:** o app tinha três jeitos de recomeçar (zerar só o placar, zerar placar e último lado, apagar tudo) e cada tela escolhia um. Isso gerou remendos (`hasResult` e `hasPlayed`, moeda mostrando um lado antigo depois de "Jogar novamente?", widget vazio) e dados "bagunçados".
+- **Decisão:** separar **configuração** (modo, pergunta, textos, vibração) de **jogo** (placar, sequência, último lado). O jogo tem três estados, calculados por `CoinStore.gameState()`: **READY** (nada girou), **PLAYING** (girou, série aberta) e **FINISHED** (um lado venceu; nunca no modo livre). Só `CoinStore.startNewGame()` começa um jogo novo, e é chamada ao: salvar na janelinha, trocar o modo, jogar novamente ou girar depois do fim, e sair do app no modo livre. "Zerar tudo" continua apagando configuração e jogo.
+- **Fundamento:** um único lugar manda no jogo, então app e widget nunca discordam. As telas só perguntam o estado (`currentBoard`, `resultText`) em vez de deduzir pelo placar.
+- **Alternativas descartadas:** manter as três funções com comentários; guardar o estado como um campo próprio (o placar já diz tudo, e um campo duplicado poderia sair de sincronia).
+- **Ajuste final:** depois do resultado, o cartão repete a mensagem do início: a pergunta (ou "Cara ou Coroa?") em cima e o convite ("Toque na moeda" no app, "Toque para girar" no widget) embaixo; o texto digitado para o lado que saiu fica no meio.
+- **Consequências:** `resetScores` virou privada (`clearScores`) e `hasResult` foi removida. Depois de "Jogar novamente?" a moeda volta a mostrar CARA (o jogo está pronto, sem lado "anterior").
+
+### D18 — Abertura (splash) e boas-vindas com destaque para o widget
+- **Data:** 15/11/2026 · **Status:** Vigente
+- **Contexto:** o usuário achou a abertura branca do Android feia e quis uma tela com o nome, e que o app ensinasse a adicionar o widget (o diferencial). As telas foram desenhadas e aprovadas antes no canvas (Abertura e Boas-vindas).
+- **Decisão:** `SplashActivity` é a primeira tela (LAUNCHER): fundo meia-noite, moeda girando devagar (mesmo desenho do app, 4 meios giros em 2,6 s, via `Coin.frame(..., baseTurns = 4)`), nome "Moedinha" e versão. Depois vai para `WelcomeActivity` (só na primeira vez, ou sempre se o usuário pediu) ou direto para `MainActivity`. As boas-vindas mostram uma tela inicial de exemplo com o widget pulsando e 3 passos. O botão "Entendi, abrir o app" é o principal; o botão de baixo alterna entre "Não mostrar de novo" (com ✓) e "Mostrar sempre que abrir o app". Na tela principal há um botão para rever as boas-vindas.
+- **Fundamento:** quem instala precisa descobrir o widget logo, sem virar chatice (por isso só na primeira vez, com escolha). No Android 12+ a abertura do sistema usa a mesma cor de fundo (`values-v31`), então não pisca branco.
+- **Alternativas descartadas:** deixar só a abertura do sistema (sem nome nem animação); mostrar as boas-vindas sempre (cansativo); biblioteca de splash (código mais avançado que o necessário).
+- **Consequências:** `welcome_seen` e `welcome_always` ficam nas preferências e "Zerar tudo" não os apaga (como a vibração). `MainActivity` deixou de ser a tela de entrada.
+
 ---
 
 ## Histórico (linha do tempo)
@@ -137,6 +186,8 @@ Este arquivo registra **o que foi decidido, por quê, e o que foi descartado**. 
 | 15/11/2026 | Removido o texto "Deu CARA!/COROA!" (a moeda já mostra o lado). Adicionada a série "melhor de N" com placar e vencedor (D05). Compila; a série ainda não foi testada pelo usuário. |
 | 15/11/2026 | Corrigida a janelinha do lápis: opções 1/5/7 empilhadas (a 7 ficava cortada), janelinha com 90% da largura e sem barra de título repetida, conteúdo rolável e teclado só abre ao tocar em um campo. |
 | 15/11/2026 | Revisão da série (D05): opções fixas 1 / 5 / 7, texto fixo em 4 linhas abaixo da moeda, sequência do que saiu em cada giro, widget padrão 3x3. Compila; ainda não testado. |
+| 15/11/2026 | D18: abertura com moeda girando e boas-vindas do widget. Compila e instalado no emulador; as duas telas foram conferidas por captura; o botão de rever e o botão de alternar ainda não foram testados por toque. |
+| 15/11/2026 | D14 e D15: app renomeado para Moedinha; novo visual (meia-noite e ouro), moeda em relevo sem texto, ícone B e fontes Baloo 2 e Nunito. Compila e instalado no emulador; a tela principal foi conferida por captura, o widget e a janelinha ainda não; não testado no celular. |
 | 15/11/2026 | D13: botão pequeno "Zerar tudo" abaixo do "Jogar novamente?", no app e no widget, com confirmação. Compila e instalado no emulador; não testado. |
 | 15/11/2026 | D11 e D12: "Salvar" na janelinha, vibração com opção de desligar, versão 0.2.0 no app, modo "Cara ou Coroa?", nova ordem das opções e rótulos fixos nos campos. Compila e instalado no emulador; ainda não testado no celular. |
 | 15/11/2026 | Teste no celular de verdade: tudo funcionou. D10: letras maiores, limites 20 e 40 e "Zerar tudo" em destaque. Compila; ainda não testado no celular. |
@@ -147,4 +198,4 @@ Este arquivo registra **o que foi decidido, por quê, e o que foi descartado**. 
 ## Perguntas em aberto
 - O widget anima de forma fluida em celulares de verdade? (no emulador, sim)
 - Vale incluir vibração e som ao girar?
-- Qual será o visual final da moeda (por exemplo, símbolos no lugar do texto)?
+- O widget fica bom com o novo visual em celulares de verdade (letra pequena do S23)?
