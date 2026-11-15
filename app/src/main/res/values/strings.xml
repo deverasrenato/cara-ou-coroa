@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Cara ou Coroa</string>
+    <string name="coin">Moeda</string>
+    <string name="flip_button">Girar moeda</string>
+    <string name="tap_to_flip">Toque para girar</string>
+    <string name="widget_description">Gire a moeda direto da tela inicial</string>
+    <string name="widget_tip">Dica: segure a tela inicial, toque em Widgets e adicione o Cara ou Coroa para girar sem abrir o app.</string>
+</resources>
