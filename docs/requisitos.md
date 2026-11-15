@@ -57,6 +57,9 @@ Versão 0.1 · Projeto acadêmico de ADS
 | RF22 | No app, a moeda gira com toque ou com deslize do dedo para cima. No widget, só com toque. |
 | RF23 | O dispositivo vibra um instante quando a moeda para e um pouco mais quando aparece o vencedor. O usuário pode desligar a vibração no app (ligada por padrão). |
 | RF24 | O app mostra o número da versão no fim da tela principal. |
+| RF25 | O usuário pode salvar até **5 layouts** (nome de até 20 letras, modo, pergunta e textos de cara e coroa) com o botão "Salvar como layout", no app e na janelinha do lápis. Nome repetido substitui o layout; com 5 salvos, o app avisa para apagar um. |
+| RF26 | Tocar em um layout (fileira "Meus layouts", no app e na janelinha) configura modo, pergunta e textos, começa um jogo novo e atualiza o widget, que fica esperando o giro. Na janelinha, a janelinha fecha. Segurar o dedo em um layout pergunta se quer apagá-lo. |
+| RF27 | Os layouts salvos não são apagados pelo "Zerar tudo". A vibração e as boas-vindas não fazem parte do layout. |
 
 ## 5. Requisitos não funcionais
 | ID | Requisito |
@@ -116,6 +119,7 @@ Guardados em `SharedPreferences` (arquivo `coin`):
 - `question`: pergunta digitada (fica guardada até o usuário mudar ou zerar tudo).
 - `series_size`: modo de jogo: 1 = Cara ou Coroa? (padrão), 0 = livre, 5 ou 7.
 - `vibrate`: vibrar quando a moeda para (verdadeiro por padrão).
+- Layouts salvos ficam em outro arquivo de preferências (`presets`), com 5 vagas: `p0_name`, `p0_mode`, `p0_question`, `p0_heads`, `p0_tails` (e `p1_...` até `p4_...`). Nome vazio = vaga livre.
 - `score_0` e `score_1`: quantas vezes cara e coroa saíram.
 - `history`: o que saiu em cada giro, em ordem (por exemplo, `010` = cara, coroa, cara). Guarda só os 7 últimos.
 - "Zerar tudo" apaga todas essas chaves.

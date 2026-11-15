@@ -12,6 +12,7 @@ Plano pensado para quem está no **2º período de ADS**: poucas coisas por vez,
 - Janelinha com "Salvar", vibração com opção de desligar e número da versão (D11, D12).
 - No app, deslizar para cima na moeda também gira (D07).
 - Novo visual (D14, D15): nome Moedinha, meia-noite e ouro, moeda em relevo sem texto, ícone novo e fontes Baloo 2 e Nunito. A tela principal foi conferida no emulador; widget e janelinha ainda não.
+- Layouts salvos (D19, versão 0.5.0): até 5, com modo, pergunta e textos; escolhidos no app ou na janelinha do lápis. Compila e instalado no emulador; ainda não testado por toque.
 - Abertura (moeda girando) e boas-vindas do widget (D18): conferidas por captura no emulador; botões ainda não testados por toque.
 
 **Ainda não existe:**

@@ -6,7 +6,7 @@ App de cara ou coroa para Android, chamado **Moedinha** (a pasta e o repositóri
 
 Projeto acadêmico de Análise e Desenvolvimento de Sistemas (ADS), desenvolvido em Kotlin com o Android Studio. Somente Android.
 
-> **Status:** em desenvolvimento (MVP), versão **0.4.0**. O app compila, gera o APK de teste e funciona no emulador e em um celular de verdade (o visual novo ainda está sendo conferido). Veja o [Roadmap](#roadmap).
+> **Status:** em desenvolvimento (MVP), versão **0.5.0**. O app compila, gera o APK de teste e funciona no emulador e em um celular de verdade (o visual novo ainda está sendo conferido). Veja o [Roadmap](#roadmap).
 
 ## Como o app funciona
 1. O usuário abre o app e toca na moeda (ou no botão "Girar moeda"): a moeda gira e mostra CARA (silhueta de uma pessoa) ou COROA (uma coroa), em relevo.
@@ -30,8 +30,9 @@ Sim     2 x 1     Não
 
 6. Quando um lado ganha a série (3 vitórias na melhor de 5), o vencedor aparece sobre a moeda, em um balão escuro translúcido, com o botão **"Jogar novamente?"** e, abaixo, um "Zerar tudo" pequeno (com confirmação). Os giros que sobrariam não são jogados. Tocar na moeda com o balão aberto também começa um jogo novo e já gira.
 7. Na janelinha do lápis, o botão **"Salvar"** começa um jogo novo: o widget volta zerado, mostra a pergunta e espera o toque na moeda.
-8. **"Zerar tudo"** (no app e na janelinha do lápis, com confirmação) apaga placar, pergunta e textos e volta ao modo "Cara ou Coroa?".
-9. A moeda vibra quando para (dá para desligar no app). Limites de texto: 20 letras para cara e coroa, 40 para a pergunta. O app e o widget guardam o mesmo estado e mostram sempre o mesmo.
+8. **Meus layouts:** o usuário pode salvar até 5 conjuntos prontos (nome, modo, pergunta e textos de cara e coroa) com "Salvar como layout". Tocar em um layout, no app ou na janelinha do lápis, configura tudo de uma vez e deixa o widget esperando o giro. Segurar o dedo em um layout apaga (com confirmação).
+9. **"Zerar tudo"** (no app e na janelinha do lápis, com confirmação) apaga placar, pergunta e textos e volta ao modo "Cara ou Coroa?".
+10. A moeda vibra quando para (dá para desligar no app). Limites de texto: 20 letras para cara e coroa, 40 para a pergunta. O app e o widget guardam o mesmo estado e mostram sempre o mesmo.
 
 ## Tecnologias
 - [Kotlin](https://kotlinlang.org) e o [Android Studio](https://developer.android.com/studio)
@@ -74,6 +75,7 @@ cara-ou-coroa/
 │       │   ├── CoinWidgetProvider.kt  # o widget
 │       │   ├── QuickFlipActivity.kt   # a janelinha do lápis do widget
 │       │   ├── ConfirmResetActivity.kt # a confirmação "Zerar tudo?" aberta pelo widget
+│       │   ├── Presets.kt             # os layouts salvos (até 5)
 │       │   ├── SplashActivity.kt      # a abertura (moeda girando)
 │       │   ├── WelcomeActivity.kt     # boas-vindas: como adicionar o widget
 │       │   └── MainActivity.kt        # a tela do app
@@ -102,6 +104,7 @@ cara-ou-coroa/
 - [x] Janelinha com "Salvar", vibração (com opção de desligar) e número da versão
 - [x] Novo visual: nome Moedinha, meia-noite e ouro, moeda em relevo sem texto, ícone novo e fontes Baloo 2 e Nunito (licença OFL, em `docs/`)
 - [x] Abertura com a moeda girando e boas-vindas que ensinam a adicionar o widget
+- [x] Layouts salvos: até 5 conjuntos de modo, pergunta e textos, escolhidos com um toque
 
 **Próximos passos:**
 - [x] Compilar (APK de teste gerado por linha de comando)
@@ -116,7 +119,7 @@ cara-ou-coroa/
 Nenhum dado sai do aparelho. O app guarda apenas o estado do jogo (resultado, placar, pergunta e textos) no próprio celular, e não usa internet. A única permissão é a de vibrar, concedida pelo Android sem perguntar. O widget não roda nada em segundo plano: só trabalha por cerca de 1,3 segundo quando o usuário toca.
 
 ## Versão
-Versão atual: **0.4.0**. O histórico de versões está em [`docs/versoes.md`](docs/versoes.md).
+Versão atual: **0.5.0**. O histórico de versões está em [`docs/versoes.md`](docs/versoes.md).
 
 ## Licença
 **Copyright (c) 2026 Renato Veras. Todos os direitos reservados.** O texto completo está em [`LICENSE`](LICENSE), em inglês, com a tradução em português ao final.

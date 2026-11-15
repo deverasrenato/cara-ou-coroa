@@ -170,6 +170,15 @@ Este arquivo registra **o que foi decidido, por quê, e o que foi descartado**. 
 - **Alternativas descartadas:** deixar só a abertura do sistema (sem nome nem animação); mostrar as boas-vindas sempre (cansativo); biblioteca de splash (código mais avançado que o necessário).
 - **Consequências:** `welcome_seen` e `welcome_always` ficam nas preferências e "Zerar tudo" não os apaga (como a vibração). `MainActivity` deixou de ser a tela de entrada.
 
+### D19 — Layouts salvos ("Meus layouts")
+- **Data:** 15/11/2026 · **Status:** Vigente
+- **Contexto:** o usuário decide coisas parecidas várias vezes ("Pedir delivery? Sim/Não") e trocar de assunto exigia mudar modo, pergunta e textos à mão.
+- **Decisão:** o usuário salva até **5 layouts**, cada um com **nome, modo, pergunta e textos de cara e coroa**. Tocar em um layout configura tudo, começa um jogo novo e atualiza o widget. Segurar o dedo pergunta se quer apagar. O botão "Salvar como layout" (no app e na janelinha do lápis) guarda o que está nos campos naquele momento; nome repetido substitui o layout, e com 5 salvos avisa para apagar um. Vibração e boas-vindas continuam preferências gerais, fora do layout.
+- **Armazenamento:** arquivo de preferências separado (`presets`), com 5 vagas (`p0_name`, `p0_mode`, `p0_question`, `p0_heads`, `p0_tails`, e assim por diante). Por ser separado, o "Zerar tudo" não apaga os layouts.
+- **Fundamento:** guardar pergunta e textos junto com o modo deixa o widget pronto com um toque, que é o objetivo do app. Cinco vagas cabem numa fileira curta, sem rolagem de lista, e mantêm o código simples (`SharedPreferences`, sem banco de dados).
+- **Alternativas descartadas:** guardar só pergunta e textos (o modo teria de ser trocado à mão); incluir a vibração no layout (é preferência do aparelho); lista ilimitada (exigiria rolagem, apagar e reordenar); layouts só no app (o widget perderia o sentido de ser rápido).
+- **Consequências:** novo arquivo `Presets.kt` e o desenho `preset_chip.xml`. A confirmação do "Zerar tudo" avisa que os layouts continuam. O widget não mudou. Versão 0.5.0.
+
 ---
 
 ## Histórico (linha do tempo)
@@ -186,6 +195,7 @@ Este arquivo registra **o que foi decidido, por quê, e o que foi descartado**. 
 | 15/11/2026 | Removido o texto "Deu CARA!/COROA!" (a moeda já mostra o lado). Adicionada a série "melhor de N" com placar e vencedor (D05). Compila; a série ainda não foi testada pelo usuário. |
 | 15/11/2026 | Corrigida a janelinha do lápis: opções 1/5/7 empilhadas (a 7 ficava cortada), janelinha com 90% da largura e sem barra de título repetida, conteúdo rolável e teclado só abre ao tocar em um campo. |
 | 15/11/2026 | Revisão da série (D05): opções fixas 1 / 5 / 7, texto fixo em 4 linhas abaixo da moeda, sequência do que saiu em cada giro, widget padrão 3x3. Compila; ainda não testado. |
+| 15/11/2026 | D19: layouts salvos (até 5), no app e na janelinha do lápis. Versão 0.5.0. Compila e instalado no emulador; ainda não testado por toque. |
 | 15/11/2026 | D18: abertura com moeda girando e boas-vindas do widget. Compila e instalado no emulador; as duas telas foram conferidas por captura; o botão de rever e o botão de alternar ainda não foram testados por toque. |
 | 15/11/2026 | D14 e D15: app renomeado para Moedinha; novo visual (meia-noite e ouro), moeda em relevo sem texto, ícone B e fontes Baloo 2 e Nunito. Compila e instalado no emulador; a tela principal foi conferida por captura, o widget e a janelinha ainda não; não testado no celular. |
 | 15/11/2026 | D13: botão pequeno "Zerar tudo" abaixo do "Jogar novamente?", no app e no widget, com confirmação. Compila e instalado no emulador; não testado. |

@@ -2,7 +2,9 @@ package com.deverasrenato.caraoucoroa
 
 import android.os.Bundle
 import android.widget.Button
+import android.view.View
 import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.RadioGroup
 import androidx.appcompat.app.AppCompatActivity
 
@@ -28,6 +30,21 @@ class QuickFlipActivity : AppCompatActivity() {
         questionInput.setText(CoinStore.getQuestion(this))
         headsInput.setText(CoinStore.getLabel(this, HEADS))
         tailsInput.setText(CoinStore.getLabel(this, TAILS))
+
+        // Meus layouts: tocar em um configura tudo, atualiza o widget e fecha a janelinha
+        val presetsContainer = findViewById<LinearLayout>(R.id.presets_container)
+        fillPresetRow(this, presetsContainer) { finish() }
+
+        // "Salvar como layout": guarda o que está nos campos agora e redesenha a fileira
+        findViewById<View>(R.id.quick_save_preset_button).setOnClickListener {
+            askSavePreset(
+                this,
+                readSeriesSize(seriesGroup),
+                questionInput.text.toString(),
+                headsInput.text.toString(),
+                tailsInput.text.toString()
+            ) { fillPresetRow(this, presetsContainer) { finish() } }
+        }
 
         flipButton.setOnClickListener {
             CoinStore.saveSeriesSize(this, readSeriesSize(seriesGroup))

@@ -375,7 +375,7 @@ fun askResetAll(
 ) {
     AlertDialog.Builder(activity)
         .setTitle("Zerar tudo?")
-        .setMessage("Apaga o placar, a pergunta e os textos de cara e coroa, e volta ao modo \"Cara ou Coroa?\".")
+        .setMessage("Apaga o placar, a pergunta e os textos de cara e coroa, e volta ao modo \"Cara ou Coroa?\". Os layouts salvos continuam.")
         .setPositiveButton("Zerar") { _, _ ->
             CoinStore.resetAll(activity)
             CoinWidgetProvider.updateAll(activity)

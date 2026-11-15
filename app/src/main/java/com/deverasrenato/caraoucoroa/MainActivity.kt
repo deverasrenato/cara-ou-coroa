@@ -13,6 +13,7 @@ import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.RadioGroup
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -67,6 +68,17 @@ class MainActivity : AppCompatActivity() {
         }
 
         flipButton.setOnClickListener { flip() }
+
+        // "Salvar como layout": guarda o modo, a pergunta e os textos que estão nos campos agora
+        findViewById<View>(R.id.save_preset_button).setOnClickListener {
+            askSavePreset(
+                this,
+                readSeriesSize(seriesGroup),
+                questionInput.text.toString(),
+                headsInput.text.toString(),
+                tailsInput.text.toString()
+            ) { refreshPresets() }
+        }
 
         // Rever as boas-vindas do widget
         findViewById<View>(R.id.welcome_review_button).setOnClickListener {
@@ -141,6 +153,20 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
         loadInputs()
         showStillCoin()
+        refreshPresets()
+    }
+
+    // Desenha a fileira "Meus layouts". Tocar em um layout configura tudo e deixa o jogo pronto.
+    private fun refreshPresets() {
+        val container = findViewById<LinearLayout>(R.id.presets_container)
+        fillPresetRow(this, container) {
+            // Se a moeda estava girando, cancela: o resultado antigo não vale mais
+            flipVersion++
+            currentAnimator?.cancel()
+            flipButton.isEnabled = true
+            loadInputs()
+            showStillCoin()
+        }
     }
 
     // Ao sair da tela, guarda o que foi digitado e atualiza o widget

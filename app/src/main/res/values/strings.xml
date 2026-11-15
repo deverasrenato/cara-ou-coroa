@@ -40,4 +40,14 @@
     <string name="welcome_review">Ver as boas-vindas do widget</string>
     <string name="welcome_preview_side">CARA</string>
     <string name="welcome_preview_question">Cara ou Coroa?</string>
+    <string name="presets_title">Meus layouts</string>
+    <string name="presets_empty">Nenhum layout salvo ainda</string>
+    <string name="save_preset">Salvar como layout</string>
+    <string name="save_preset_title">Salvar como layout</string>
+    <string name="preset_name_hint">Nome do layout (até 20 letras)</string>
+    <string name="preset_name_empty">Digite um nome para o layout</string>
+    <string name="preset_saved">Layout salvo</string>
+    <string name="preset_updated">Layout atualizado</string>
+    <string name="preset_full">Você já tem 5 layouts. Apague um segurando o dedo nele.</string>
+    <string name="delete_preset_title">Apagar o layout \"%s\"?</string>
 </resources>
