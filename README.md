@@ -91,6 +91,7 @@ cara-ou-coroa/
 - [`docs/plano-de-execucao.md`](docs/plano-de-execucao.md): estado atual, etapas e como retomar em outro computador.
 - [`docs/decisoes.md`](docs/decisoes.md): histórico e registro das decisões, com o fundamento de cada uma.
 - [`docs/versoes.md`](docs/versoes.md): o que cada versão trouxe.
+- [`docs/publicacao.md`](docs/publicacao.md): o que falta para publicar na Google Play.
 
 ## Roadmap
 **Já existe no código (compila; ainda não testado no celular):**
@@ -114,6 +115,13 @@ cara-ou-coroa/
 - [ ] Conferir o novo visual no widget e no celular de verdade
 - [ ] Som ao girar (opcional)
 - [ ] APK de teste
+
+**Caminho até a Play Store** (detalhes em [`docs/publicacao.md`](docs/publicacao.md)):
+- [ ] **A.** Fechar o MVP: testes por toque no emulador e no S23
+- [ ] **B.** Tela "Sobre o desenvolvedor" (apresentação e links de perfil), versão 0.6.0
+- [ ] **C.** Preparar a publicação: nome e `applicationId` definitivos, `targetSdk` 36, AAB assinado, política de privacidade e ficha da loja
+- [ ] **D.** Conta na Play (US$ 25), teste fechado (12 testadores por 14 dias) e produção, versão 1.0.0
+- [ ] **E.** "Doe um café" pelo Google Play Billing, depois de publicado
 
 ## Privacidade
 Nenhum dado sai do aparelho. O app guarda apenas o estado do jogo (resultado, placar, pergunta e textos) no próprio celular, e não usa internet. A única permissão é a de vibrar, concedida pelo Android sem perguntar. O widget não roda nada em segundo plano: só trabalha por cerca de 1,3 segundo quando o usuário toca.

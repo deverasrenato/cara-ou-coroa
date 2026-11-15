@@ -179,6 +179,14 @@ Este arquivo registra **o que foi decidido, por quê, e o que foi descartado**. 
 - **Alternativas descartadas:** guardar só pergunta e textos (o modo teria de ser trocado à mão); incluir a vibração no layout (é preferência do aparelho); lista ilimitada (exigiria rolagem, apagar e reordenar); layouts só no app (o widget perderia o sentido de ser rápido).
 - **Consequências:** novo arquivo `Presets.kt` e o desenho `preset_chip.xml`. A confirmação do "Zerar tudo" avisa que os layouts continuam. O widget não mudou. Versão 0.5.0.
 
+### D20 — Tela "Sobre o desenvolvedor" e "Doe um café" pela Play
+- **Data:** 15/11/2026 · **Status:** Planejada (ainda não implementada)
+- **Contexto:** o usuário quer apresentar-se como desenvolvedor no app (para portfólio), mostrar como encontrá-lo e oferecer "Doe um café para o dev".
+- **Decisão:** primeiro, uma tela "Sobre o desenvolvedor", aberta por um link discreto no fim da tela principal, com apresentação e links de perfil que abrem no navegador, sem pedido de dinheiro. Depois, quando o app estiver na loja, o "Doe um café" como **produto avulso do Google Play Billing** (compra feita dentro da própria Play Store), com a biblioteca oficial.
+- **Fundamento:** o link de perfil não exige permissão nem biblioteca e já ajuda o portfólio. Pagar pelo Google Play Billing é o caminho aceito pela loja para cobrar dentro do app; um link de pagamento por fora corre o risco de ser recusado pela política de Pagamentos. Não dá para testar o Billing com APK instalado à mão, por isso ele fica para depois da publicação em teste.
+- **Alternativas descartadas:** PIX ou página de apoio (Buy Me a Coffee, Ko-fi) dentro do app (risco com a política da loja e expõe dados do usuário); começar já pelo Billing (exige conta, perfil de pagamentos e app na loja).
+- **Consequências:** a seção de privacidade e o formulário "Segurança dos dados" precisarão ser ajustados na Fase E; a regra "poucas bibliotecas novas" ganha uma exceção (Play Billing). Detalhes em `docs/publicacao.md`.
+
 ---
 
 ## Histórico (linha do tempo)
@@ -195,6 +203,7 @@ Este arquivo registra **o que foi decidido, por quê, e o que foi descartado**. 
 | 15/11/2026 | Removido o texto "Deu CARA!/COROA!" (a moeda já mostra o lado). Adicionada a série "melhor de N" com placar e vencedor (D05). Compila; a série ainda não foi testada pelo usuário. |
 | 15/11/2026 | Corrigida a janelinha do lápis: opções 1/5/7 empilhadas (a 7 ficava cortada), janelinha com 90% da largura e sem barra de título repetida, conteúdo rolável e teclado só abre ao tocar em um campo. |
 | 15/11/2026 | Revisão da série (D05): opções fixas 1 / 5 / 7, texto fixo em 4 linhas abaixo da moeda, sequência do que saiu em cada giro, widget padrão 3x3. Compila; ainda não testado. |
+| 15/11/2026 | Planejamento da publicação: criado `docs/publicacao.md` (fases A a E) e registrada a D20 (tela "Sobre" e "Doe um café" pela Play). Nada implementado. |
 | 15/11/2026 | D19: layouts salvos (até 5), no app e na janelinha do lápis. Versão 0.5.0. Compila e instalado no emulador; ainda não testado por toque. |
 | 15/11/2026 | D18: abertura com moeda girando e boas-vindas do widget. Compila e instalado no emulador; as duas telas foram conferidas por captura; o botão de rever e o botão de alternar ainda não foram testados por toque. |
 | 15/11/2026 | D14 e D15: app renomeado para Moedinha; novo visual (meia-noite e ouro), moeda em relevo sem texto, ícone B e fontes Baloo 2 e Nunito. Compila e instalado no emulador; a tela principal foi conferida por captura, o widget e a janelinha ainda não; não testado no celular. |

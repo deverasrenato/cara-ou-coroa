@@ -77,6 +77,13 @@ Cortar cedo é o que garante que o MVP fique pronto.
 - Gerar o APK pelo Android Studio e instalar em outro celular.
 - **Pronto quando:** o app funciona instalado, fora do Android Studio.
 
+### Etapas 5 a 8 — Fechar e publicar
+O passo a passo completo, com listas de verificação, está em [`publicacao.md`](publicacao.md). Resumo:
+- **Etapa 5 (Fase A):** fechar o MVP com testes por toque no emulador e no S23.
+- **Etapa 6 (Fase B):** tela "Sobre o desenvolvedor" (D20), versão 0.6.0.
+- **Etapa 7 (Fases C e D):** nome e `applicationId` definitivos, `targetSdk` 36, AAB assinado, política de privacidade, ficha da loja, conta na Play, teste fechado (12 testadores por 14 dias) e produção, versão 1.0.0.
+- **Etapa 8 (Fase E):** "Doe um café" pelo Google Play Billing, só depois de publicado (D20).
+
 ## 5. Definição de "pronto" para qualquer etapa
 - [ ] O projeto compila no Android Studio sem erros.
 - [ ] Testei no celular ou no emulador, e o app abre sem erros.
@@ -88,7 +95,7 @@ Cortar cedo é o que garante que o MVP fique pronto.
 1. **Uma coisa por vez.**
 2. **Commits pequenos e frequentes.**
 3. **Entenda antes de seguir.** Peça explicações; os comentários em português existem para isso.
-4. **Poucas bibliotecas novas.** Hoje só usamos `core-ktx` e `appcompat`.
+4. **Poucas bibliotecas novas.** Hoje só usamos `core-ktx` e `appcompat`. A única exceção prevista é o Google Play Billing, na Etapa 8 (D20).
 5. **Registre decisões** em `docs/decisoes.md`.
 6. **Teste no celular a cada etapa**, não só no final.
 
