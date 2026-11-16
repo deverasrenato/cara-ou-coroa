@@ -4,7 +4,7 @@
 
 **Cara ou coroa na ponta do dedo. Gire a moeda direto da tela inicial.**
 
-[![Testar a demonstração](https://img.shields.io/badge/▶_Testar_o_app-online-FFC83D?style=for-the-badge&labelColor=0B1030)](https://deverasrenato.github.io/cara-ou-coroa/)
+[![Testar a demonstração](https://img.shields.io/badge/▶_Testar_o_app-online-FFC83D?style=for-the-badge&labelColor=0B1030)](https://renato-veras.github.io/cara-ou-coroa/)
 
 ![Android](https://img.shields.io/badge/Android-Kotlin-3DDC84?logo=android&logoColor=white)
 ![Versão](https://img.shields.io/badge/vers%C3%A3o-0.5.0-FFC83D)
@@ -15,7 +15,7 @@
 </div>
 
 ## 👉 Teste agora, sem instalar nada
-**[https://deverasrenato.github.io/cara-ou-coroa/](https://deverasrenato.github.io/cara-ou-coroa/)**
+**[https://renato-veras.github.io/cara-ou-coroa/](https://renato-veras.github.io/cara-ou-coroa/)**
 
 Abre uma simulação clicável no navegador, com dois celulares lado a lado: toque no ícone da **Moedinha** para abrir o app e toque na moeda do **widget** para girar sem abrir o app. (É uma recriação em página web; o app de verdade é nativo para Android.)
 
@@ -64,7 +64,7 @@ Sim     2 x 1     Não
 10. A moeda vibra quando para (dá para desligar no app). Limites de texto: 20 letras para cara e coroa, 40 para a pergunta. O app e o widget guardam o mesmo estado e mostram sempre o mesmo.
 
 ## Demonstração online
-Uma simulação clicável do app roda em uma página web (pasta `docs/demo`), para quem não tem Android ver como funciona. Aparecem dois celulares lado a lado: a tela inicial com o widget e o app, que abre ao tocar no ícone da Moedinha. Dá para ver: abertura, boas-vindas, os 3 modos, placar, vencedor, widget, janelinha do lápis e "Meus layouts" (salvar, escolher e apagar). O endereço é [deverasrenato.github.io/cara-ou-coroa](https://deverasrenato.github.io/cara-ou-coroa/) (GitHub Pages, fonte `main`, pasta `/docs`). É uma recriação em JavaScript, não o app de verdade.
+Uma simulação clicável do app roda em uma página web (pasta `docs/demo`), para quem não tem Android ver como funciona. Aparecem dois celulares lado a lado: a tela inicial com o widget e o app, que abre ao tocar no ícone da Moedinha. Dá para ver: abertura, boas-vindas, os 3 modos, placar, vencedor, widget, janelinha do lápis e "Meus layouts" (salvar, escolher e apagar). O endereço é [renato-veras.github.io/cara-ou-coroa](https://renato-veras.github.io/cara-ou-coroa/) (GitHub Pages, fonte `main`, pasta `/docs`). É uma recriação em JavaScript, não o app de verdade.
 
 ## Tecnologias
 - [Kotlin](https://kotlinlang.org) e o [Android Studio](https://developer.android.com/studio)
@@ -78,7 +78,7 @@ A moeda é desenhada por código (`Canvas`), sem imagens prontas (a cara é a si
 **Pré-requisitos:** [Android Studio](https://developer.android.com/studio) (ele já traz o Java e o SDK do Android) e [Git](https://git-scm.com).
 
 ```bash
-git clone https://github.com/deverasrenato/cara-ou-coroa.git
+git clone https://github.com/renato-veras/cara-ou-coroa.git
 ```
 
 1. Abra a pasta `cara-ou-coroa` no Android Studio e espere o Gradle sincronizar (na primeira vez demora e baixa bastante coisa).

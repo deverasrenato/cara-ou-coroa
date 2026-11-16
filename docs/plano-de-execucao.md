@@ -105,7 +105,7 @@ O passo a passo completo, com listas de verificação, está em [`publicacao.md`
 3. Clone o projeto:
 
 ```bash
-git clone https://github.com/deverasrenato/cara-ou-coroa.git
+git clone https://github.com/renato-veras/cara-ou-coroa.git
 ```
 
 4. Configure sua identidade **só neste repositório**: `git config user.name "[Nome]"` e `git config user.email "[email noreply]"`.
